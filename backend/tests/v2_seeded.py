@@ -43,6 +43,9 @@ def seeded_client(seeded_engine):
 
 
 def login_as(c: TestClient, email: str) -> None:
+    from app.security.web import limiter
+
+    limiter.reset()  # these tests log in many times on purpose; login rate limits are tested in tests/security
     c.cookies.clear()
     r = c.post("/auth/login", json={"email": email, "password": PASSWORD})
     assert r.status_code == 200, r.text

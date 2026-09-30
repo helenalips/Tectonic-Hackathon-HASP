@@ -121,6 +121,148 @@
     "source": "generated"
   },
   {
+    "id": "p-katrin",
+    "name": "Katrin Huber",
+    "role": "Senior payroll consultant",
+    "team": "DACH Payroll",
+    "email": "katrin@example.com",
+    "domains": [
+      "payroll",
+      "time_management",
+      "multi_country_payroll"
+    ],
+    "countries": [
+      "DE",
+      "AT"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-ruben",
+    "name": "Ruben Claes",
+    "role": "Senior payroll consultant",
+    "team": "BE Logistics & Transport",
+    "email": "ruben@example.com",
+    "domains": [
+      "payroll",
+      "time_management"
+    ],
+    "countries": [
+      "BE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-femke",
+    "name": "Femke Jansen",
+    "role": "Implementation lead",
+    "team": "NL Implementation",
+    "email": "femke@example.com",
+    "domains": [
+      "hr_system_implementation",
+      "multi_country_payroll",
+      "payroll"
+    ],
+    "countries": [
+      "NL",
+      "BE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-piotr",
+    "name": "Piotr Zielinski",
+    "role": "Payroll specialist",
+    "team": "PL Payroll Operations",
+    "email": "piotr@example.com",
+    "domains": [
+      "payroll",
+      "compliance"
+    ],
+    "countries": [
+      "PL"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-an",
+    "name": "An Wouters",
+    "role": "Payroll consultant healthcare",
+    "team": "BE Public & Care",
+    "email": "an@example.com",
+    "domains": [
+      "payroll",
+      "compliance"
+    ],
+    "countries": [
+      "BE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-lars",
+    "name": "Lars Eriksen",
+    "role": "Account manager",
+    "team": "Benelux & Nordics Commercial",
+    "email": "lars@example.com",
+    "domains": [
+      "commercial"
+    ],
+    "countries": [
+      "BE",
+      "NO",
+      "DE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-pieter",
+    "name": "Pieter Bakker",
+    "role": "Account manager",
+    "team": "NL Commercial",
+    "email": "pieter@example.com",
+    "domains": [
+      "commercial"
+    ],
+    "countries": [
+      "NL"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-ines",
+    "name": "Ines Laurent",
+    "role": "Pay transparency advisor",
+    "team": "Reward & Pay Equity",
+    "email": "ines@example.com",
+    "domains": [
+      "pay_transparency",
+      "compliance"
+    ],
+    "countries": [
+      "BE",
+      "FR",
+      "NL"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-daan",
+    "name": "Daan Mertens",
+    "role": "Change and adoption consultant",
+    "team": "BE Consulting",
+    "email": "daan@example.com",
+    "domains": [
+      "change_management",
+      "time_management"
+    ],
+    "countries": [
+      "BE",
+      "DE"
+    ],
+    "source": "generated"
+  },
+  {
     "id": "p-admin",
     "name": "TrustGrid Admin",
     "role": "Platform administrator",

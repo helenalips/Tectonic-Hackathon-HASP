@@ -82,5 +82,68 @@
       "text": "Do we need to report the pay gap per category of workers doing the same work or work of equal value, or is the overall gender pay gap enough for a company of our size?",
       "expected": "Linked to di-kaneka-open-question again; still one open item."
     }
+  ],
+  "_compose_note": "Drafts for the live draft check (POST /check with client_id, channel, subject, text). Nothing is stored.",
+  "compose": [
+    {
+      "id": "compose-a",
+      "scenario": "Horizontal conflict + rewrite: full price and 60-day terms vs Jan's 10% discount and 30-day terms",
+      "login": "sofie@example.com",
+      "client_id": "cl-kaneka",
+      "channel": "email",
+      "subject": "Pay equity audit 2026 - proposal",
+      "text": "Dear Kaneka HR team,\n\nThank you for your interest in the pay equity audit 2026. The audit will be invoiced at full price. Invoices are payable within 60 days.\n\nKind regards,\nSofie Maes",
+      "expected": "2 horizontal conflicts: price_model full_price vs discount_pct 10 (Jan Peeters, 14 Mar 2025, high) and invoice_terms_days 60 vs 30 (addendum, high); each with sources and a suggested rewrite. No vertical."
+    },
+    {
+      "id": "compose-b",
+      "scenario": "Vertical: overtime premium missing -> solved at 4 other clients by 3+ people",
+      "login": "sofie@example.com",
+      "client_id": "cl-kaneka",
+      "channel": "email",
+      "subject": "Overtime premium on the September payslips",
+      "text": "Dear Kaneka HR team,\n\nWe looked into your ticket: the overtime premium is missing on the September payslips of the night shift in the Oevel plant. We are checking the premium rules and will come back to you with a correction.\n\nKind regards,\nSofie Maes",
+      "expected": "Vertical: similar resolved cases at Logistics, Healthcare, Industrial tools and Manufacturing clients (anonymized for a consultant, figures masked); 3+ solvers such as Ruben Claes, An Wouters, Katrin Huber and Piotr Zielinski as problem experts. Horizontal: nothing to contradict."
+    },
+    {
+      "id": "compose-c",
+      "scenario": "Both: full price + manual Excel pay gap calculation",
+      "login": "sofie@example.com",
+      "client_id": "cl-kaneka",
+      "channel": "email",
+      "subject": "Pay gap report - approach and price",
+      "text": "Dear Kaneka HR team,\n\nFor the pay gap report we will calculate the adjusted and unadjusted pay gap manually in Excel, combining a payroll export with the job matrix. The report is invoiced at full price.\n\nKind regards,\nSofie Maes",
+      "expected": "Horizontal conflict (full price vs 10% discount) with rewrite; vertical: pay gap report solved at CityD-WES, Retail NL and Healthcare BE clients; approach warning: manual Excel vs one integrated system."
+    },
+    {
+      "id": "compose-d",
+      "scenario": "Clean draft: only confirmations",
+      "login": "sofie@example.com",
+      "client_id": "cl-kaneka",
+      "channel": "email",
+      "subject": "Confirmation of our agreements",
+      "text": "Dear Kaneka HR team,\n\nAs agreed, the 10% discount on the pay equity audit stays in place. Invoices are payable within 30 days, and the payroll cut-off is on the 20th of each month. Our support response time is 24 hours, and Jan Peeters remains your contact person.\n\nKind regards,\nSofie Maes",
+      "expected": "Horizontal: 5 confirmations (discount 10, invoice terms 30, cut-off 20th, SLA 24h, contact Jan Peeters), no conflicts. Vertical: no similar cases (commercial confirmation)."
+    },
+    {
+      "id": "compose-e",
+      "scenario": "Declined modernization trap: proposing digital clocking to SK hi-tech",
+      "login": "tomasz@example.com",
+      "client_id": "cl-skhitech",
+      "channel": "email",
+      "subject": "Idea: digital time registration on the shopfloor",
+      "text": "Dear HR team,\n\nFollowing our plant visit, we propose to modernise time registration on the shopfloor with a digital clocking system linked to InnovaHR, so shift leaders no longer type over paper time sheets. We could start a pilot on the separator line in November.\n\nKind regards,\nTomasz Nowak",
+      "expected": "Horizontal conflict (high): the client decided on 17 Jun 2025 to keep paper time registration and asked not to propose digital clocking before the 2027 budget (confirmed by 2 documents); suggested rewrite that keeps paper time registration. Vertical: works council approval for time registration at other clients."
+    },
+    {
+      "id": "compose-f",
+      "scenario": "Slack question: has anyone solved overtime premium missing on payslips?",
+      "login": "lotte@example.com",
+      "client_id": "cl-globalpaint",
+      "channel": "chat",
+      "subject": null,
+      "text": "Has anyone solved overtime premium missing on payslips? Global Paint has it again in Germany.",
+      "expected": "Vertical: 4 resolved cases (lead sees client names) with 3+ solvers and their top documents; horizontal: nothing to check."
+    }
   ]
 }

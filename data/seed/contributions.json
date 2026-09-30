@@ -89,5 +89,194 @@
     "hours": 61.0,
     "first_date": "2025-05-05",
     "last_date": "2026-08-28"
+  },
+  {
+    "person_id": "p-piotr",
+    "client_id": "cl-skhitech",
+    "hours": 118.0,
+    "first_date": "2024-10-01",
+    "last_date": "2025-04-02"
+  },
+  {
+    "person_id": "p-lars",
+    "client_id": "cl-nordvik",
+    "hours": 46.0,
+    "first_date": "2023-09-12",
+    "last_date": "2026-05-12"
+  },
+  {
+    "person_id": "p-ruben",
+    "client_id": "cl-nordvik",
+    "hours": 386.0,
+    "first_date": "2023-11-06",
+    "last_date": "2026-05-12"
+  },
+  {
+    "person_id": "p-elena",
+    "client_id": "cl-nordvik",
+    "hours": 52.0,
+    "first_date": "2024-06-03",
+    "last_date": "2024-09-15"
+  },
+  {
+    "person_id": "p-marc",
+    "client_id": "cl-nordvik",
+    "hours": 14.0,
+    "first_date": "2024-03-11",
+    "last_date": "2024-03-20"
+  },
+  {
+    "person_id": "p-daan",
+    "client_id": "cl-nordvik",
+    "hours": 40.0,
+    "first_date": "2025-04-01",
+    "last_date": "2025-06-05"
+  },
+  {
+    "person_id": "p-pieter",
+    "client_id": "cl-helio",
+    "hours": 58.0,
+    "first_date": "2024-11-20",
+    "last_date": "2026-03-02"
+  },
+  {
+    "person_id": "p-femke",
+    "client_id": "cl-helio",
+    "hours": 412.0,
+    "first_date": "2025-04-01",
+    "last_date": "2026-08-20"
+  },
+  {
+    "person_id": "p-lotte",
+    "client_id": "cl-helio",
+    "hours": 76.0,
+    "first_date": "2025-05-05",
+    "last_date": "2025-07-15"
+  },
+  {
+    "person_id": "p-elena",
+    "client_id": "cl-helio",
+    "hours": 64.0,
+    "first_date": "2025-09-01",
+    "last_date": "2025-11-20"
+  },
+  {
+    "person_id": "p-ines",
+    "client_id": "cl-helio",
+    "hours": 88.0,
+    "first_date": "2025-10-01",
+    "last_date": "2026-02-18"
+  },
+  {
+    "person_id": "p-noor",
+    "client_id": "cl-helio",
+    "hours": 36.0,
+    "first_date": "2025-09-02",
+    "last_date": "2026-03-05"
+  },
+  {
+    "person_id": "p-jan",
+    "client_id": "cl-maas",
+    "hours": 22.0,
+    "first_date": "2023-04-03",
+    "last_date": "2024-02-01"
+  },
+  {
+    "person_id": "p-an",
+    "client_id": "cl-maas",
+    "hours": 298.0,
+    "first_date": "2024-02-01",
+    "last_date": "2026-06-30"
+  },
+  {
+    "person_id": "p-marc",
+    "client_id": "cl-maas",
+    "hours": 71.0,
+    "first_date": "2024-04-15",
+    "last_date": "2025-10-21"
+  },
+  {
+    "person_id": "p-noor",
+    "client_id": "cl-maas",
+    "hours": 44.0,
+    "first_date": "2024-08-20",
+    "last_date": "2024-10-01"
+  },
+  {
+    "person_id": "p-daan",
+    "client_id": "cl-maas",
+    "hours": 28.0,
+    "first_date": "2025-03-18",
+    "last_date": "2025-04-22"
+  },
+  {
+    "person_id": "p-ines",
+    "client_id": "cl-maas",
+    "hours": 33.0,
+    "first_date": "2025-06-10",
+    "last_date": "2025-10-21"
+  },
+  {
+    "person_id": "p-lars",
+    "client_id": "cl-alpenwerk",
+    "hours": 31.0,
+    "first_date": "2024-11-04",
+    "last_date": "2025-02-03"
+  },
+  {
+    "person_id": "p-katrin",
+    "client_id": "cl-alpenwerk",
+    "hours": 344.0,
+    "first_date": "2024-01-10",
+    "last_date": "2026-07-14"
+  },
+  {
+    "person_id": "p-lotte",
+    "client_id": "cl-alpenwerk",
+    "hours": 48.0,
+    "first_date": "2025-05-12",
+    "last_date": "2025-06-30"
+  },
+  {
+    "person_id": "p-femke",
+    "client_id": "cl-alpenwerk",
+    "hours": 39.0,
+    "first_date": "2026-04-22",
+    "last_date": "2026-06-02"
+  },
+  {
+    "person_id": "p-daan",
+    "client_id": "cl-alpenwerk",
+    "hours": 18.0,
+    "first_date": "2025-10-20",
+    "last_date": "2025-11-10"
+  },
+  {
+    "person_id": "p-ines",
+    "client_id": "cl-alpenwerk",
+    "hours": 12.0,
+    "first_date": "2026-07-14",
+    "last_date": "2026-07-28"
+  },
+  {
+    "person_id": "p-ruben",
+    "client_id": "cl-kaneka",
+    "hours": 6.0,
+    "first_date": "2025-02-10",
+    "last_date": "2025-02-14"
+  },
+  {
+    "person_id": "p-noor",
+    "client_id": "cl-cityd",
+    "hours": 9.0,
+    "first_date": "2026-07-02",
+    "last_date": "2026-07-10"
+  },
+  {
+    "person_id": "p-abebe",
+    "client_id": "cl-globalpaint",
+    "hours": 12.0,
+    "first_date": "2025-03-03",
+    "last_date": "2025-03-20"
   }
 ]

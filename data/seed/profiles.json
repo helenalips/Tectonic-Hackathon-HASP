@@ -1,0 +1,192 @@
+{
+  "p-jan": {
+    "title": "Account manager Belgium",
+    "location": "Antwerp, BE",
+    "languages": [
+      "Dutch",
+      "English",
+      "French"
+    ],
+    "bio": "Owns the commercial relationship with mid-market clients in Flanders. Writes the proposals, discounts and renewals that later turn into records.",
+    "years_at_sdworx": 11
+  },
+  "p-sofie": {
+    "title": "Payroll & reward consultant",
+    "location": "Ghent, BE",
+    "languages": [
+      "Dutch",
+      "English"
+    ],
+    "bio": "Builds pay frameworks and pay gap reporting on top of payroll data. Led the CityD-WES pay framework and the Kaneka pay transparency project.",
+    "years_at_sdworx": 7
+  },
+  "p-tomasz": {
+    "title": "HR system consultant",
+    "location": "Wroclaw, PL",
+    "languages": [
+      "Polish",
+      "English",
+      "German"
+    ],
+    "bio": "Implements SD Worx InnovaHR for manufacturing plants: migration, time management and Polish declarations.",
+    "years_at_sdworx": 6
+  },
+  "p-lotte": {
+    "title": "Team lead multi-country payroll",
+    "location": "Utrecht, NL",
+    "languages": [
+      "Dutch",
+      "English",
+      "German"
+    ],
+    "bio": "Leads vendor consolidation programmes: from dozens of local payroll vendors to one multinational provider.",
+    "years_at_sdworx": 12
+  },
+  "p-abebe": {
+    "title": "Payroll consultant Ethiopia",
+    "location": "Addis Ababa, ET",
+    "languages": [
+      "Amharic",
+      "English"
+    ],
+    "bio": "Local payroll and labour-law expert for East Africa; supports large agricultural workforces.",
+    "years_at_sdworx": 4
+  },
+  "p-elena": {
+    "title": "Onboarding and self-service specialist",
+    "location": "Milan, IT",
+    "languages": [
+      "Italian",
+      "English",
+      "Spanish"
+    ],
+    "bio": "Designs onboarding and self-service for frontline workers, including kiosks and shared devices for people without smartphones.",
+    "years_at_sdworx": 8
+  },
+  "p-marc": {
+    "title": "Compliance advisor",
+    "location": "Brussels, BE",
+    "languages": [
+      "French",
+      "Dutch",
+      "English"
+    ],
+    "bio": "Labour-law and pay transparency compliance for Belgium and France; reviews collective agreement rules and works council files.",
+    "years_at_sdworx": 15
+  },
+  "p-noor": {
+    "title": "Change consultant",
+    "location": "Mechelen, BE",
+    "languages": [
+      "Dutch",
+      "English",
+      "Arabic"
+    ],
+    "bio": "Helps HR teams and managers adopt new pay and self-service processes.",
+    "years_at_sdworx": 5
+  },
+  "p-katrin": {
+    "title": "Senior payroll consultant DACH",
+    "location": "Munich, DE",
+    "languages": [
+      "German",
+      "English"
+    ],
+    "bio": "German and Austrian payroll, collective agreement supplements and works council agreements on time registration.",
+    "years_at_sdworx": 9
+  },
+  "p-ruben": {
+    "title": "Senior payroll consultant logistics",
+    "location": "Antwerp, BE",
+    "languages": [
+      "Dutch",
+      "French",
+      "English"
+    ],
+    "bio": "Shift-based payroll for transport and logistics: overtime, Sunday and night premiums, planner inputs and cut-offs.",
+    "years_at_sdworx": 10
+  },
+  "p-femke": {
+    "title": "Implementation lead Netherlands",
+    "location": "Amsterdam, NL",
+    "languages": [
+      "Dutch",
+      "English"
+    ],
+    "bio": "Leads payroll implementations and migrations for retail and hospitality, including leave balance reconciliation.",
+    "years_at_sdworx": 6
+  },
+  "p-piotr": {
+    "title": "Payroll specialist Poland",
+    "location": "Katowice, PL",
+    "languages": [
+      "Polish",
+      "English"
+    ],
+    "bio": "Polish payroll operations: overtime, ZUS corrections and cut-off discipline for plants.",
+    "years_at_sdworx": 3
+  },
+  "p-an": {
+    "title": "Payroll consultant healthcare",
+    "location": "Leuven, BE",
+    "languages": [
+      "Dutch",
+      "French",
+      "English"
+    ],
+    "bio": "Healthcare payroll under the IFIC classification: barema changes, indexation and retroactive corrections.",
+    "years_at_sdworx": 8
+  },
+  "p-lars": {
+    "title": "Account manager Benelux & Nordics",
+    "location": "Brussels, BE",
+    "languages": [
+      "Norwegian",
+      "English",
+      "Dutch"
+    ],
+    "bio": "Commercial owner for logistics and industrial clients with Nordic or German parents.",
+    "years_at_sdworx": 5
+  },
+  "p-pieter": {
+    "title": "Account manager Netherlands",
+    "location": "Rotterdam, NL",
+    "languages": [
+      "Dutch",
+      "English"
+    ],
+    "bio": "Commercial owner for Dutch retail clients.",
+    "years_at_sdworx": 2
+  },
+  "p-ines": {
+    "title": "Pay transparency advisor",
+    "location": "Lille, FR",
+    "languages": [
+      "French",
+      "English",
+      "Dutch"
+    ],
+    "bio": "Designs pay gap reporting under the EU Pay Transparency Directive: job architecture, categories of workers and joint pay assessments.",
+    "years_at_sdworx": 4
+  },
+  "p-daan": {
+    "title": "Change and adoption consultant",
+    "location": "Hasselt, BE",
+    "languages": [
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "bio": "Works council consultations, communication packs and pilots for new time registration.",
+    "years_at_sdworx": 6
+  },
+  "p-admin": {
+    "title": "Platform administrator",
+    "location": "Brussels, BE",
+    "languages": [
+      "English"
+    ],
+    "bio": "Technical administrator of the TrustGrid demo.",
+    "years_at_sdworx": null
+  }
+}

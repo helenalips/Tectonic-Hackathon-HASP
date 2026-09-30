@@ -43,5 +43,41 @@
     "segment": "enterprise",
     "summary": "Situation: The company runs a new lithium-ion battery separator plant with nearly 500 employees and a target of 2,000. Approach: It implemented SD Worx InnovaHR, built on SAP SuccessFactors with SD Worx's own tools for reporting, document generation, time management and Polish declarations. It covered org structure, HR and payroll, time management, and performance and goals, with a data migration from the previous provider. Outcome: Bulk payslip and tax-document distribution, self-service for managers and employees, and automated Polish social security corrections. Manual effort for payslips and tax forms was practically eliminated.",
     "source": "mock"
+  },
+  {
+    "id": "cl-nordvik",
+    "name": "Nordvik Logistics",
+    "country": "BE",
+    "sector": "Logistics",
+    "segment": "enterprise",
+    "source": "generated",
+    "summary": "Situation: Belgian subsidiary of a fictional Norwegian logistics group with depots in Antwerp, Ghent and Liege; drivers, warehouse crews and office staff on shifts. Approach: managed payroll with time registration exports from the planning tool. Challenges: overtime and Sunday premiums, drivers without smartphones, late planner inputs. Outcome: stable payroll with automated premium checks and depot kiosks."
+  },
+  {
+    "id": "cl-helio",
+    "name": "Helio Retail Group",
+    "country": "NL",
+    "sector": "Retail",
+    "segment": "enterprise",
+    "source": "generated",
+    "summary": "Situation: fictional Dutch retail chain that grew through acquisitions and ended up with three payroll vendors. Approach: consolidation into one payroll design on SD Worx, go-live planned for January 2027. Challenges: store colleagues without smartphones, mid-month cut-off disputes, pay transparency. Outcome: in progress; pay gap report delivered, store tablets live."
+  },
+  {
+    "id": "cl-maas",
+    "name": "Maas & Partners Care",
+    "country": "BE",
+    "sector": "Healthcare",
+    "segment": "mid_market",
+    "source": "generated",
+    "summary": "Situation: fictional Belgian care group with nursing homes and home care. Approach: payroll and HR advisory under the healthcare collective agreements. Challenges: retroactive barema corrections, night and weekend premiums, works council approval for time registration. Outcome: automated retro calculation and an approved time registration policy."
+  },
+  {
+    "id": "cl-alpenwerk",
+    "name": "Alpenwerk Tools",
+    "country": "DE",
+    "sector": "Industrial tools",
+    "segment": "mid_market",
+    "source": "generated",
+    "summary": "Situation: fictional German-Austrian toolmaker with two plants and two local payroll vendors. Approach: one payroll provider for both countries, live since April 2026. Challenges: works council agreement on time registration, overtime supplements, leave balances after migration. Outcome: live, with a pay transparency project starting."
   }
 ]

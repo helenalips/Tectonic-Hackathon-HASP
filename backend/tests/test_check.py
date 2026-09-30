@@ -109,8 +109,6 @@ def test_new_fact_and_duplicate_document(seeded_client):
     login_as(seeded_client, SOFIE)
     res = _check(seeded_client, "cl-kaneka", "Kaneka will move to a weekly payroll from next year.")
     assert [f["kind"] for f in res["horizontal_findings"]] == ["conflict"]  # weekly vs monthly
-    with Session(seeded_client.app_state_engine if hasattr(seeded_client, "app_state_engine") else None) if False else _noop():
-        pass
     doc_text = (
         "Kaneka HR asked which employees must be included in the pay gap calculation. Answer given in the call: "
         "all workers with an employment contract on the reference date, including part-time staff, with pay "
@@ -120,14 +118,6 @@ def test_new_fact_and_duplicate_document(seeded_client):
     dup = [f for f in res["horizontal_findings"] if f["kind"] == "duplicate_document"]
     assert dup and dup[0]["sources"][0]["document_id"] == "doc-kaneka-scope-question"
     assert dup[0]["draft_quote"] == doc_text
-
-
-class _noop:
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *a):
-        return False
 
 
 def test_draft_quotes_are_exact_substrings_for_every_compose_input(seeded_client):
@@ -165,7 +155,6 @@ def test_recurring_problem_returns_solvers_from_other_clients_minimized(seeded_c
         assert name not in blob, name  # anonymized labels, neutral titles
     for c in res["similar_cases"]:
         assert not re.search(r"\d", c["resolution_summary"] + c["title"])  # figures masked
-        assert c["client_id"] if False else True
         for s in c["sources"]:
             assert s["client_label"] == c["client_label"]
             assert not re.search(r"\d", s["excerpt"])

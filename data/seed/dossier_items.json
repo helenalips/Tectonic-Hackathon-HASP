@@ -184,5 +184,445 @@
       "doc-sk-selfservice"
     ],
     "source": "generated"
+  },
+  {
+    "id": "di-kaneka-retro",
+    "client_id": "cl-kaneka",
+    "category": "problem",
+    "title": "CLA increase not applied: retroactive corrections",
+    "description": "The January collective agreement increase was not applied to shift workers; retroactive salary corrections needed.",
+    "status": "resolved",
+    "resolution": "Automated retro calculation in the payroll engine; back pay paid automatically in the next run with separate retro lines on the payslip.",
+    "created_by": "p-sofie",
+    "created_at": "2025-02-05T08:20:00Z",
+    "linked_document_ids": [
+      "doc-kaneka-retro-ticket",
+      "doc-kaneka-retro-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-cityd-retro",
+    "client_id": "cl-cityd",
+    "category": "question",
+    "title": "Retroactive indexation for consultants who changed level",
+    "description": "How to handle retroactive salary corrections after indexation when a consultant changed function level; back pay is corrected by hand today.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-noor",
+    "created_at": "2026-07-02T10:30:00Z",
+    "linked_document_ids": [
+      "doc-cityd-retro-question"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-afriflora-leave",
+    "client_id": "cl-afriflora",
+    "category": "problem",
+    "title": "Leave balances wrong after migration",
+    "description": "Annual leave balances of farm workers do not match the old Excel balances after the migration.",
+    "status": "resolved",
+    "resolution": "Opening balances reconciled per worker against the last approved balances, one-off correction import with audit trail, sign-off per farm.",
+    "created_by": "p-abebe",
+    "created_at": "2025-03-03T07:45:00Z",
+    "linked_document_ids": [
+      "doc-afriflora-leave-ticket",
+      "doc-afriflora-leave-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-leave",
+    "client_id": "cl-skhitech",
+    "category": "problem",
+    "title": "Carry-over leave missing after migration",
+    "description": "Carry-over leave balances are missing after the data migration from the previous provider.",
+    "status": "resolved",
+    "resolution": "Re-imported carry-over balances with an audit trail and a reconciliation report per migration wave.",
+    "created_by": "p-tomasz",
+    "created_at": "2024-04-02T07:30:00Z",
+    "linked_document_ids": [
+      "doc-sk-leave-ticket",
+      "doc-sk-leave-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-overtime",
+    "client_id": "cl-skhitech",
+    "category": "problem",
+    "title": "Overtime premium missing on night shift payslips",
+    "description": "The overtime premium is missing on payslips for hours above the shift schedule.",
+    "status": "resolved",
+    "resolution": "Separate wage type for overtime hours, automated validation of scheduled versus worked hours before each run, correction run for the missing premiums.",
+    "created_by": "p-piotr",
+    "created_at": "2024-11-06T06:50:00Z",
+    "linked_document_ids": [
+      "doc-sk-overtime-ticket",
+      "doc-sk-overtime-solution",
+      "doc-sk-overtime-followup"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-cutoff",
+    "client_id": "cl-skhitech",
+    "category": "complaint",
+    "title": "Dispute about late variable pay inputs and the cut-off",
+    "description": "Plant managers dispute that late variable pay inputs after the mid-month cut-off are paid a month later.",
+    "status": "resolved",
+    "resolution": "Published cut-off calendar, automated reminders before the deadline, correction line for late inputs.",
+    "created_by": "p-piotr",
+    "created_at": "2025-03-11T11:00:00Z",
+    "linked_document_ids": [
+      "doc-sk-cutoff-meeting",
+      "doc-sk-cutoff-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-timereg",
+    "client_id": "cl-skhitech",
+    "category": "feature_request",
+    "title": "Digital time registration for the shopfloor",
+    "description": "Options for badge terminals or digital clocking on the shopfloor instead of paper time sheets.",
+    "status": "resolved",
+    "resolution": "Declined by the client in June 2025: the shopfloor keeps paper time registration; no digital clocking proposal before the 2027 budget round.",
+    "created_by": "p-tomasz",
+    "created_at": "2025-05-20T10:00:00Z",
+    "linked_document_ids": [
+      "doc-sk-timereg-workshop",
+      "doc-sk-timereg-decision",
+      "doc-sk-timereg-email"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-nordvik-overtime",
+    "client_id": "cl-nordvik",
+    "category": "problem",
+    "title": "Overtime and Sunday premium missing on payslips",
+    "description": "Overtime premium and Sunday supplement missing on payslips of warehouse night shifts.",
+    "status": "resolved",
+    "resolution": "Premium codes from the planning tool mapped to dedicated wage types, automated check on worked hours without a premium, correction run, compliance review against the sector agreement.",
+    "created_by": "p-ruben",
+    "created_at": "2024-02-12T07:15:00Z",
+    "linked_document_ids": [
+      "doc-nordvik-overtime-ticket",
+      "doc-nordvik-overtime-solution",
+      "doc-nordvik-overtime-review"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-nordvik-kiosk",
+    "client_id": "cl-nordvik",
+    "category": "feature_request",
+    "title": "Self-service for drivers without smartphones",
+    "description": "Drivers without a smartphone cannot see payslips online and need an alternative to paper.",
+    "status": "resolved",
+    "resolution": "Kiosk in every depot canteen with badge and PIN login, printed payslips on request, helpdesk hour on payday.",
+    "created_by": "p-ruben",
+    "created_at": "2024-05-06T08:00:00Z",
+    "linked_document_ids": [
+      "doc-nordvik-kiosk-request",
+      "doc-nordvik-kiosk-solution",
+      "doc-nordvik-kiosk-rollout"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-nordvik-cutoff",
+    "client_id": "cl-nordvik",
+    "category": "complaint",
+    "title": "Late planner inputs paid a month late",
+    "description": "Mid-month cut-off dispute: trip allowances and overtime reported after the deadline are paid a month late.",
+    "status": "resolved",
+    "resolution": "Automated reminder to planners before the deadline, locked input screen after the cut-off, one correction window per month.",
+    "created_by": "p-ruben",
+    "created_at": "2024-10-10T14:00:00Z",
+    "linked_document_ids": [
+      "doc-nordvik-cutoff-meeting",
+      "doc-nordvik-cutoff-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-nordvik-retro",
+    "client_id": "cl-nordvik",
+    "category": "problem",
+    "title": "Indexation back pay for drivers",
+    "description": "The indexation was applied late; retroactive salary corrections and back pay needed.",
+    "status": "resolved",
+    "resolution": "Automated retro calculation in the payroll engine, paid in the next run with separate retro lines.",
+    "created_by": "p-ruben",
+    "created_at": "2025-01-20T07:40:00Z",
+    "linked_document_ids": [
+      "doc-nordvik-retro-ticket",
+      "doc-nordvik-retro-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-nordvik-worksc",
+    "client_id": "cl-nordvik",
+    "category": "question",
+    "title": "Works council approval for time registration data",
+    "description": "The works council wants guarantees before time registration data from the planning tool is used for payroll.",
+    "status": "resolved",
+    "resolution": "Consultation pack, privacy impact assessment and a test period in one depot; works council approved.",
+    "created_by": "p-daan",
+    "created_at": "2025-04-24T10:00:00Z",
+    "linked_document_ids": [
+      "doc-nordvik-worksc",
+      "doc-nordvik-worksc-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-helio-consolidation",
+    "client_id": "cl-helio",
+    "category": "problem",
+    "title": "Three payroll vendors after acquisitions",
+    "description": "Three payroll vendors with different pay calendars and wage types; no single payroll process.",
+    "status": "resolved",
+    "resolution": "One harmonised payroll design and data model, parallel runs, reconciliation per entity and a phased switch-off of the legacy vendors.",
+    "created_by": "p-pieter",
+    "created_at": "2025-01-14T09:00:00Z",
+    "linked_document_ids": [
+      "doc-helio-rfp",
+      "doc-helio-consolidation-design",
+      "doc-helio-consolidation-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-helio-cutoff",
+    "client_id": "cl-helio",
+    "category": "complaint",
+    "title": "Store managers dispute the mid-month cut-off",
+    "description": "Shift changes and overtime entered after the mid-month cut-off are paid a month late.",
+    "status": "resolved",
+    "resolution": "Fixed cut-off, a second correction window for shift changes and automated reminders to store managers.",
+    "created_by": "p-femke",
+    "created_at": "2025-05-15T08:30:00Z",
+    "linked_document_ids": [
+      "doc-helio-cutoff-dispute",
+      "doc-helio-cutoff-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-helio-smartphone",
+    "client_id": "cl-helio",
+    "category": "feature_request",
+    "title": "Self-service for store colleagues without smartphones",
+    "description": "Store colleagues without a smartphone cannot open payslips or request leave online.",
+    "status": "resolved",
+    "resolution": "Shared tablet in every store back office with badge login, and a store champion per store.",
+    "created_by": "p-femke",
+    "created_at": "2025-08-12T07:00:00Z",
+    "linked_document_ids": [
+      "doc-helio-smartphone-ticket",
+      "doc-helio-tablets",
+      "doc-helio-tablets-followup"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-helio-paygap",
+    "client_id": "cl-helio",
+    "category": "feature_request",
+    "title": "Adjusted and unadjusted pay gap report",
+    "description": "HR needs an adjusted and unadjusted pay gap report per category of workers for the EU Pay Transparency Directive.",
+    "status": "resolved",
+    "resolution": "Pay gap report from one integrated system with job families and pay grades as job architecture; gap calculated automatically per category of workers, plus a manager communication pack.",
+    "created_by": "p-noor",
+    "created_at": "2025-09-02T09:15:00Z",
+    "linked_document_ids": [
+      "doc-helio-paygap-request",
+      "doc-helio-paygap-solution",
+      "doc-helio-paygap-comms"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-helio-leave",
+    "client_id": "cl-helio",
+    "category": "problem",
+    "title": "Leave balances differ after dry-run migration",
+    "description": "Leave balances of store colleagues from one legacy vendor differ after the dry-run migration.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-femke",
+    "created_at": "2026-08-20T07:30:00Z",
+    "linked_document_ids": [
+      "doc-helio-leave-ticket"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-maas-retro",
+    "client_id": "cl-maas",
+    "category": "problem",
+    "title": "Wrong back pay after barema update and indexation",
+    "description": "Retroactive salary corrections after the barema update and indexation were calculated manually and were wrong.",
+    "status": "resolved",
+    "resolution": "Automated retro calculation in the payroll engine with the new baremas loaded by effective date; compliance review against the sector agreement.",
+    "created_by": "p-an",
+    "created_at": "2024-03-05T08:00:00Z",
+    "linked_document_ids": [
+      "doc-maas-retro-ticket",
+      "doc-maas-retro-solution",
+      "doc-maas-retro-review"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-maas-smartphone",
+    "client_id": "cl-maas",
+    "category": "feature_request",
+    "title": "Self-service for care staff without a smartphone",
+    "description": "Care staff without a company smartphone cannot use the payslip app.",
+    "status": "resolved",
+    "resolution": "SMS-code login on shared ward computers and printed payslips on request.",
+    "created_by": "p-noor",
+    "created_at": "2024-08-20T07:00:00Z",
+    "linked_document_ids": [
+      "doc-maas-smartphone-ticket",
+      "doc-maas-smartphone-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-maas-overtime",
+    "client_id": "cl-maas",
+    "category": "problem",
+    "title": "Weekend and night premium missing on payslips",
+    "description": "Overtime premium missing on payslips of night and weekend shifts in two nursing homes.",
+    "status": "resolved",
+    "resolution": "Premium rules per shift type added, correction run, automated check on premium hours per shift.",
+    "created_by": "p-an",
+    "created_at": "2025-01-14T07:20:00Z",
+    "linked_document_ids": [
+      "doc-maas-overtime-ticket",
+      "doc-maas-overtime-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-maas-worksc",
+    "client_id": "cl-maas",
+    "category": "question",
+    "title": "Works council approval for time registration",
+    "description": "The works council must approve the new time registration for nursing staff before payroll use.",
+    "status": "resolved",
+    "resolution": "Consultation pack, privacy impact assessment and a pilot on two wards; works council approved.",
+    "created_by": "p-marc",
+    "created_at": "2025-03-18T10:00:00Z",
+    "linked_document_ids": [
+      "doc-maas-worksc",
+      "doc-maas-worksc-pilot",
+      "doc-maas-worksc-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-maas-paygap",
+    "client_id": "cl-maas",
+    "category": "feature_request",
+    "title": "Pay gap report per category of workers",
+    "description": "HR needs an adjusted and unadjusted pay gap report per category of workers based on the job classification.",
+    "status": "resolved",
+    "resolution": "Delivered from one integrated system with the job classification as job architecture; gap calculated automatically per category of workers.",
+    "created_by": "p-ines",
+    "created_at": "2025-06-10T13:00:00Z",
+    "linked_document_ids": [
+      "doc-maas-paygap-request",
+      "doc-maas-paygap-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-alpen-consolidation",
+    "client_id": "cl-alpenwerk",
+    "category": "problem",
+    "title": "Two local payroll vendors for Germany and Austria",
+    "description": "Two local payroll vendors with different calendars and wage types for the German and Austrian entities.",
+    "status": "resolved",
+    "resolution": "One payroll provider, one payroll calendar, harmonised wage types and one integrated reporting layer.",
+    "created_by": "p-lars",
+    "created_at": "2025-02-03T09:00:00Z",
+    "linked_document_ids": [
+      "doc-alpen-contract",
+      "doc-alpen-consolidation-design",
+      "doc-alpen-golive"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-alpen-worksc",
+    "client_id": "cl-alpenwerk",
+    "category": "question",
+    "title": "Works council approval for the time registration interface",
+    "description": "The works council must approve the time registration interface to payroll.",
+    "status": "resolved",
+    "resolution": "Works agreement on purpose, retention and access rights, prepared with a communication pack.",
+    "created_by": "p-katrin",
+    "created_at": "2025-09-09T10:00:00Z",
+    "linked_document_ids": [
+      "doc-alpen-worksc",
+      "doc-alpen-worksc-comms",
+      "doc-alpen-worksc-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-alpen-leave",
+    "client_id": "cl-alpenwerk",
+    "category": "problem",
+    "title": "Leave balances in days versus hours after migration",
+    "description": "Leave balances differ after the migration because the vendors used different leave units.",
+    "status": "resolved",
+    "resolution": "All balances converted to one unit, reconciliation report per person and sign-off per plant.",
+    "created_by": "p-katrin",
+    "created_at": "2026-04-22T07:30:00Z",
+    "linked_document_ids": [
+      "doc-alpen-leave-ticket",
+      "doc-alpen-leave-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-alpen-overtime",
+    "client_id": "cl-alpenwerk",
+    "category": "problem",
+    "title": "Overtime supplement missing after go-live",
+    "description": "Overtime premium missing on payslips after the migration: collective agreement supplements not calculated.",
+    "status": "resolved",
+    "resolution": "Collective agreement supplements mapped to wage types with an automated premium calculation from the attendance data; missing supplements paid in the next run.",
+    "created_by": "p-katrin",
+    "created_at": "2026-05-06T07:00:00Z",
+    "linked_document_ids": [
+      "doc-alpen-overtime-ticket",
+      "doc-alpen-overtime-solution"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-alpen-paygap",
+    "client_id": "cl-alpenwerk",
+    "category": "feature_request",
+    "title": "Pay gap report for Germany and Austria",
+    "description": "HR needs an adjusted and unadjusted pay gap report for the EU Pay Transparency Directive for both countries.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-ines",
+    "created_at": "2026-07-14T09:00:00Z",
+    "linked_document_ids": [
+      "doc-alpen-paygap-request"
+    ],
+    "source": "generated"
   }
 ]

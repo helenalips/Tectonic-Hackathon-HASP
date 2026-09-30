@@ -441,7 +441,8 @@ def _horizontal(ctx: _Ctx, original: str, clean: str) -> list[HorizontalFinding]
                 label = KEY_LABELS.get(rec.key, rec.key.replace("_", " "))
                 new = f"{out.rstrip('.')} (as agreed earlier, the {label} is {_record_phrase(s, rec.key, rec.value, rec.unit)})."
             out = new
-        rewrites[span] = out if out != sentence else None
+        out = to_plain_text(out) if out is not None else None  # a rewrite never carries markup
+        rewrites[span] = out if out and out != sentence else None
 
     # Duplicate of an existing document of this client (same content, forwarded copy, ...)
     if len(clean) >= 40:
