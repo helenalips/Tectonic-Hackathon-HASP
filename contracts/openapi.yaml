@@ -1,0 +1,422 @@
+openapi: 3.1.0
+info:
+  title: TrustGrid API
+  version: 0.1.0
+  description: >
+    Contract between backend agents (1-3) and the frontend (agent 4). See schema.md for
+    entity semantics. All endpoints except /health and /auth/login require the `tg_session` cookie.
+servers:
+  - url: http://localhost:8000
+security:
+  - cookieAuth: []
+
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: object, properties: { status: { type: string } } } } } }
+
+  /auth/login:
+    post:
+      security: []
+      summary: Log in. Sets an httpOnly SameSite=Strict cookie (15 min).
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/LoginRequest" } } } }
+      responses:
+        "200": { description: Logged in, content: { application/json: { schema: { $ref: "#/components/schemas/Me" } } } }
+        "401": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+  /auth/logout:
+    post:
+      responses: { "204": { description: Cookie cleared } }
+  /auth/me:
+    get:
+      responses: { "200": { description: Current user, content: { application/json: { schema: { $ref: "#/components/schemas/Me" } } } } }
+
+  /clients:
+    get:
+      summary: Clients visible to the user (all for lead/admin; assigned + read-only others for consultants)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/ClientSummary" } } } } }
+  /clients/{client_id}:
+    get:
+      summary: Full client record (horizontal timeline). Logged as a view in AuditLog.
+      parameters: [{ $ref: "#/components/parameters/ClientId" }]
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/ClientRecord" } } } }
+        "404": { $ref: "#/components/responses/Error" }
+  /clients/{client_id}/experts:
+    get:
+      parameters:
+        - { $ref: "#/components/parameters/ClientId" }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/Category" } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Experts" } } } }
+
+  /events:
+    post:
+      summary: Capture a new touchpoint. Runs dedup, claim extraction, horizontal and vertical checks.
+      description: 403 if a consultant is not assigned to client_id.
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/EventCreate" } } } }
+      responses:
+        "201": { description: Captured, content: { application/json: { schema: { $ref: "#/components/schemas/EventResult" } } } }
+        "403": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+
+  /dossier-items/{item_id}/create-anyway:
+    post:
+      summary: Override a dossier-item dedup link and create a separate item (reason required, audited)
+      parameters: [{ name: item_id, in: path, required: true, schema: { type: string, maxLength: 40 } }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/CreateAnywayRequest" } } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/DossierItem" } } } }
+
+  /conflicts:
+    get:
+      parameters:
+        - { name: client_id, in: query, schema: { type: string, maxLength: 40 } }
+        - { name: status, in: query, schema: { type: string, enum: [pending, resolved] } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Conflict" } } } } }
+  /conflicts/{conflict_id}/resolve:
+    post:
+      summary: Resolve a conflict. Consultants only on assigned clients; leads/admins anywhere.
+      parameters: [{ name: conflict_id, in: path, required: true, schema: { type: string, maxLength: 40 } }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ConflictResolve" } } } }
+      responses:
+        "200": { description: Resolved, content: { application/json: { schema: { $ref: "#/components/schemas/Conflict" } } } }
+        "403": { $ref: "#/components/responses/Error" }
+
+  /search/precedents:
+    get:
+      summary: Vertical search across other clients (data-minimized)
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 3, maxLength: 500 } }
+        - { name: exclude_client_id, in: query, schema: { type: string, maxLength: 40 } }
+        - { name: category, in: query, schema: { $ref: "#/components/schemas/Category" } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Precedent" } } } } }
+
+  /people/{person_id}:
+    get:
+      parameters: [{ name: person_id, in: path, required: true, schema: { type: string, maxLength: 40 } }]
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/PersonProfile" } } } }
+
+  /ask:
+    post:
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/AskRequest" } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Answer" } } } }
+        "429": { $ref: "#/components/responses/Error" }
+
+  /solutions:
+    post:
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/SolutionRequest" } } } }
+      responses:
+        "201": { description: Draft created, content: { application/json: { schema: { $ref: "#/components/schemas/Solution" } } } }
+        "403": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+
+components:
+  securitySchemes:
+    cookieAuth: { type: apiKey, in: cookie, name: tg_session }
+  parameters:
+    ClientId: { name: client_id, in: path, required: true, schema: { type: string, maxLength: 40, pattern: "^cl-[a-z0-9-]{1,36}$" } }
+  responses:
+    Error:
+      description: Generic error (never a stack trace)
+      content: { application/json: { schema: { type: object, required: [detail], properties: { detail: { type: string } } } } }
+
+  schemas:
+    Category: { type: string, enum: [feature_request, problem, question, complaint, commercial, payroll_rule] }
+    DocType: { type: string, enum: [email, meeting, visit, contract, onboarding, ticket, note, policy, solution] }
+    Severity: { type: string, enum: [high, medium, low] }
+    TrustLabel: { type: string, enum: [Reliable, Verify, Uncertain] }
+
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        password: { type: string, minLength: 1, maxLength: 128 }
+    Me:
+      type: object
+      properties:
+        user_id: { type: string }
+        person: { $ref: "#/components/schemas/PersonRef" }
+        role: { type: string, enum: [consultant, lead, admin] }
+        assigned_client_ids: { type: array, items: { type: string } }
+
+    PersonRef:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, role: { type: string }, team: { type: string } }
+
+    TrustFactor:
+      type: object
+      properties:
+        name: { type: string, enum: [recency, ownership, country_relevance, author_expertise, corroboration, no_open_conflicts] }
+        value: { type: number, minimum: 0, maximum: 1 }
+        weight: { type: number }
+        reason: { type: string }
+    TrustScore:
+      type: object
+      properties:
+        score: { type: integer, minimum: 0, maximum: 100 }
+        label: { $ref: "#/components/schemas/TrustLabel" }
+        factors: { type: array, items: { $ref: "#/components/schemas/TrustFactor" } }
+    PersonReliability:
+      type: object
+      properties: { score: { type: integer }, reasons: { type: array, items: { type: string } } }
+
+    ClientSummary:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        country: { type: string }
+        sector: { type: string }
+        segment: { type: string }
+        can_edit: { type: boolean }
+        open_conflicts: { type: integer }
+        demo_data: { type: boolean, description: "Always true: internal facts are fictional; UI shows a Demo data tag" }
+    ConsistencyStatus:
+      type: object
+      properties:
+        open_conflicts: { type: integer }
+        open_duplicates: { type: integer, description: "Unresolved duplicate facts (always 0 by design; linked duplicates are counted separately)" }
+        linked_duplicates: { type: integer }
+        consistent: { type: boolean }
+    TimelineItem:
+      type: object
+      properties:
+        document_id: { type: string }
+        type: { $ref: "#/components/schemas/DocType" }
+        title: { type: string }
+        excerpt: { type: string, maxLength: 300 }
+        date: { type: string, format: date-time }
+        author: { $ref: "#/components/schemas/PersonRef" }
+        owner: { oneOf: [{ $ref: "#/components/schemas/PersonRef" }, { type: "null" }] }
+        trust: { $ref: "#/components/schemas/TrustScore" }
+        suspicious: { type: boolean }
+        suspicious_reason: { type: [string, "null"] }
+        dossier_item_ids: { type: array, items: { type: string } }
+        linked_duplicate_count: { type: integer }
+        source: { type: string }
+    ClaimView:
+      type: object
+      properties:
+        id: { type: string }
+        key: { type: string }
+        value: { type: string }
+        unit: { type: [string, "null"] }
+        status: { type: string, enum: [active, superseded] }
+        valid_from: { type: string, format: date }
+        evidence_count: { type: integer }
+        evidence:
+          type: array
+          items:
+            type: object
+            properties:
+              document_id: { type: string }
+              title: { type: string }
+              author: { $ref: "#/components/schemas/PersonRef" }
+              added_at: { type: string, format: date-time }
+              relation: { type: string, enum: [origin, confirmation] }
+        trust: { $ref: "#/components/schemas/TrustScore" }
+    PersonContribution:
+      type: object
+      properties:
+        person: { $ref: "#/components/schemas/PersonRef" }
+        hours: { type: number }
+        first_date: { type: string, format: date }
+        last_date: { type: string, format: date }
+        domains: { type: array, items: { type: string } }
+        reliability: { $ref: "#/components/schemas/PersonReliability" }
+    ClientRecord:
+      type: object
+      properties:
+        client: { $ref: "#/components/schemas/ClientSummary" }
+        summary: { type: string }
+        consistency: { $ref: "#/components/schemas/ConsistencyStatus" }
+        timeline: { type: array, items: { $ref: "#/components/schemas/TimelineItem" } }
+        claims: { type: array, items: { $ref: "#/components/schemas/ClaimView" } }
+        dossier_items: { type: array, items: { $ref: "#/components/schemas/DossierItem" } }
+        people: { type: array, items: { $ref: "#/components/schemas/PersonContribution" } }
+        experts: { $ref: "#/components/schemas/Experts" }
+
+    DossierItem:
+      type: object
+      properties:
+        id: { type: string }
+        client_id: { type: string }
+        category: { $ref: "#/components/schemas/Category" }
+        title: { type: string }
+        description: { type: string }
+        status: { type: string, enum: [open, resolved] }
+        resolution: { type: [string, "null"] }
+        created_by: { $ref: "#/components/schemas/PersonRef" }
+        created_at: { type: string, format: date-time }
+        linked_document_ids: { type: array, items: { type: string } }
+
+    EventCreate:
+      type: object
+      additionalProperties: false
+      required: [client_id, type, text]
+      properties:
+        client_id: { type: string, maxLength: 40, pattern: "^cl-[a-z0-9-]{1,36}$" }
+        type: { $ref: "#/components/schemas/DocType" }
+        title: { type: string, maxLength: 200 }
+        text: { type: string, minLength: 3, maxLength: 20000 }
+        country_scope: { type: string, maxLength: 5 }
+    DedupDecision:
+      type: object
+      properties:
+        level: { type: string, enum: [document, claim, dossier_item] }
+        outcome: { type: string, enum: [linked, created_anyway] }
+        matched_id: { type: string }
+        matched_title: { type: string }
+        matched_author: { oneOf: [{ $ref: "#/components/schemas/PersonRef" }, { type: "null" }] }
+        matched_date: { type: [string, "null"], format: date-time }
+        similarity: { type: number }
+        reason: { type: string }
+    EventResult:
+      type: object
+      properties:
+        document_id: { type: string }
+        document_status: { type: string, enum: [active, duplicate] }
+        dossier_item: { $ref: "#/components/schemas/DossierItem" }
+        dossier_item_created: { type: boolean }
+        new_claims: { type: array, items: { $ref: "#/components/schemas/ClaimView" } }
+        confirmed_claims: { type: array, items: { $ref: "#/components/schemas/ClaimView" } }
+        dedup: { type: array, items: { $ref: "#/components/schemas/DedupDecision" } }
+        conflicts_within_record: { type: array, items: { $ref: "#/components/schemas/Conflict" } }
+        conflicts_across_records: { type: array, items: { $ref: "#/components/schemas/Conflict" } }
+        precedents: { type: array, items: { $ref: "#/components/schemas/Precedent" } }
+        suspicious: { type: boolean }
+        suspicious_reason: { type: [string, "null"] }
+        consistency: { $ref: "#/components/schemas/ConsistencyStatus" }
+    CreateAnywayRequest:
+      type: object
+      additionalProperties: false
+      required: [document_id, reason]
+      properties:
+        document_id: { type: string, maxLength: 40 }
+        reason: { type: string, minLength: 10, maxLength: 500 }
+
+    Conflict:
+      type: object
+      properties:
+        id: { type: string }
+        client_id: { type: [string, "null"] }
+        scope: { type: string, enum: [within_record, across_records] }
+        severity: { $ref: "#/components/schemas/Severity" }
+        explanation: { type: string }
+        new_claim: { oneOf: [{ $ref: "#/components/schemas/ClaimView" }, { type: "null" }] }
+        existing_claim: { oneOf: [{ $ref: "#/components/schemas/ClaimView" }, { type: "null" }] }
+        new_document: { type: [object, "null"], properties: { id: { type: string }, title: { type: string }, excerpt: { type: string }, author: { $ref: "#/components/schemas/PersonRef" }, date: { type: string } } }
+        existing_document: { type: object, properties: { id: { type: string }, title: { type: string }, excerpt: { type: string }, author: { $ref: "#/components/schemas/PersonRef" }, date: { type: string } } }
+        resolution: { type: string, enum: [pending, updated_record, updated_new_info, both_valid] }
+        resolution_note: { type: [string, "null"] }
+        resolved_by: { oneOf: [{ $ref: "#/components/schemas/PersonRef" }, { type: "null" }] }
+        created_at: { type: string, format: date-time }
+    ConflictResolve:
+      type: object
+      additionalProperties: false
+      required: [resolution]
+      properties:
+        resolution: { type: string, enum: [updated_record, updated_new_info, both_valid] }
+        note: { type: string, maxLength: 1000, description: "Required when resolution = both_valid" }
+
+    Precedent:
+      type: object
+      description: Data-minimized. No client figures.
+      properties:
+        dossier_item_id: { type: string }
+        client_label: { type: string, description: "Client name only if the user may see it, else sector + country" }
+        category: { $ref: "#/components/schemas/Category" }
+        title: { type: string }
+        resolution_summary: { type: string }
+        date: { type: string, format: date }
+        expert: { $ref: "#/components/schemas/PersonRef" }
+        similarity: { type: number }
+
+    Expert:
+      type: object
+      properties:
+        person: { $ref: "#/components/schemas/PersonRef" }
+        kind: { type: string, enum: [record_expert, problem_expert] }
+        reason: { type: string }
+        reliability: { $ref: "#/components/schemas/PersonReliability" }
+        hours_on_client: { type: [number, "null"] }
+        solved_count: { type: [integer, "null"] }
+        top_documents:
+          type: array
+          maxItems: 3
+          items: { type: object, properties: { id: { type: string }, title: { type: string }, trust: { $ref: "#/components/schemas/TrustScore" } } }
+        contact: { type: string, description: "Fictional email" }
+    Experts:
+      type: object
+      properties:
+        record_expert: { oneOf: [{ $ref: "#/components/schemas/Expert" }, { type: "null" }] }
+        problem_expert: { oneOf: [{ $ref: "#/components/schemas/Expert" }, { type: "null" }] }
+    PersonProfile:
+      type: object
+      properties:
+        person: { $ref: "#/components/schemas/PersonRef" }
+        domains: { type: array, items: { type: string } }
+        countries: { type: array, items: { type: string } }
+        reliability: { $ref: "#/components/schemas/PersonReliability" }
+        contributions: { type: array, items: { $ref: "#/components/schemas/PersonContribution" } }
+
+    AskRequest:
+      type: object
+      additionalProperties: false
+      required: [client_id, question]
+      properties:
+        client_id: { type: string, maxLength: 40, pattern: "^cl-[a-z0-9-]{1,36}$" }
+        question: { type: string, minLength: 3, maxLength: 1000 }
+    Citation:
+      type: object
+      properties:
+        ref: { type: integer, description: "Matches [n] in answer text" }
+        document_id: { type: string }
+        title: { type: string }
+        author: { $ref: "#/components/schemas/PersonRef" }
+        date: { type: string }
+        trust: { $ref: "#/components/schemas/TrustScore" }
+        confirmed_by: { type: integer }
+    Answer:
+      type: object
+      properties:
+        answer: { type: string, description: "Plain text with [n] citation markers. Rendered as text, never HTML." }
+        citations: { type: array, items: { $ref: "#/components/schemas/Citation" } }
+        uncertainties: { type: array, items: { type: string } }
+        experts: { $ref: "#/components/schemas/Experts" }
+        mode: { type: string, enum: [llm, mock] }
+
+    SolutionRequest:
+      type: object
+      additionalProperties: false
+      required: [dossier_item_id]
+      properties:
+        dossier_item_id: { type: string, maxLength: 40 }
+    Solution:
+      type: object
+      properties:
+        id: { type: string }
+        dossier_item_id: { type: string }
+        document_id: { type: string }
+        draft: { type: string }
+        built_on: { type: array, items: { $ref: "#/components/schemas/Citation" } }
+        backed_by: { $ref: "#/components/schemas/Experts" }
+        consistency_status:
+          type: object
+          properties:
+            within_record: { type: string, enum: [consistent, conflict] }
+            across_records: { type: string, enum: [consistent, conflict] }
+            conflict_ids: { type: array, items: { type: string } }
+            reasons: { type: array, items: { type: string } }
+        created_at: { type: string, format: date-time }

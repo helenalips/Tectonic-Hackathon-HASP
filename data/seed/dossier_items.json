@@ -1,0 +1,188 @@
+[
+  {
+    "id": "di-cityd-pay-framework",
+    "client_id": "cl-cityd",
+    "category": "problem",
+    "title": "Pay discrepancies between consultants after the merger",
+    "description": "Consultants in the same role are paid differently depending on the legacy company after the 2020 merger.",
+    "status": "resolved",
+    "resolution": "Built a competence matrix defining functions and required criteria, then a salary scale on top of it. Moved all compensation data into one integrated system with automated calculations and real-time insights, replacing manual Excel forecasting.",
+    "created_by": "p-sofie",
+    "created_at": "2024-02-06T10:00:00Z",
+    "linked_document_ids": [
+      "doc-cityd-kickoff",
+      "doc-cityd-design",
+      "doc-cityd-closure"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-cityd-pay-gap-report",
+    "client_id": "cl-cityd",
+    "category": "feature_request",
+    "title": "Adjusted and unadjusted pay gap report",
+    "description": "HR needs an adjusted and unadjusted pay gap report per function level for the EU Pay Transparency Directive.",
+    "status": "resolved",
+    "resolution": "Delivered from the integrated compensation system: the competence matrix and salary scale act as the job architecture, and the adjusted and unadjusted pay gap is calculated automatically per function level. No manual Excel step, so figures stay consistent between reports.",
+    "created_by": "p-marc",
+    "created_at": "2024-05-21T14:30:00Z",
+    "linked_document_ids": [
+      "doc-cityd-paygap"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-kaneka-scope-question",
+    "client_id": "cl-kaneka",
+    "category": "question",
+    "title": "Which employees are in scope of the pay gap calculation?",
+    "description": "Which employees must be included in the pay gap calculation?",
+    "status": "resolved",
+    "resolution": "All workers with an employment contract on the reference date, including part-time staff with pay converted to hourly pay. Interns without an employment contract are out of scope.",
+    "created_by": "p-marc",
+    "created_at": "2025-11-20T15:00:00Z",
+    "linked_document_ids": [
+      "doc-kaneka-scope-question"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-kaneka-data-sources",
+    "client_id": "cl-kaneka",
+    "category": "problem",
+    "title": "Data sources do not work as one system",
+    "description": "Payroll, job matrix, Hay evaluation and benchmarking data do not work as one system yet.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-sofie",
+    "created_at": "2026-02-10T09:30:00Z",
+    "linked_document_ids": [
+      "doc-kaneka-ptd-kickoff"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-kaneka-open-question",
+    "client_id": "cl-kaneka",
+    "category": "question",
+    "title": "Pay gap reporting per category of workers?",
+    "description": "Do we need to report the pay gap per category of workers doing the same work or work of equal value, or is the overall gender pay gap enough for a company of our size?",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-sofie",
+    "created_at": "2026-05-06T08:45:00Z",
+    "linked_document_ids": [
+      "doc-kaneka-question-email"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-kaneka-manager-readiness",
+    "client_id": "cl-kaneka",
+    "category": "feature_request",
+    "title": "Pay transparency training for managers",
+    "description": "Managers are not aware of the directive and need training before the first report.",
+    "status": "resolved",
+    "resolution": "Three e-learning modules, an intranet FAQ page and live sessions per site.",
+    "created_by": "p-noor",
+    "created_at": "2026-06-15T10:00:00Z",
+    "linked_document_ids": [
+      "doc-kaneka-manager-readiness"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-afriflora-consolidation",
+    "client_id": "cl-afriflora",
+    "category": "problem",
+    "title": "Payroll in Excel files crashes and is exposed to fraud",
+    "description": "Payroll runs through huge Excel files managed from the Netherlands; files crash and the process is exposed to fraud and errors.",
+    "status": "resolved",
+    "resolution": "Consolidated into one integrated HR and payroll system on SAP SuccessFactors with local support; biometric time tracking and bonus management integrated. Payroll delays ended.",
+    "created_by": "p-lotte",
+    "created_at": "2024-01-18T07:30:00Z",
+    "linked_document_ids": [
+      "doc-afriflora-excel",
+      "doc-afriflora-contract",
+      "doc-afriflora-golive"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-afriflora-self-service",
+    "client_id": "cl-afriflora",
+    "category": "feature_request",
+    "title": "Employee self-service for workers without smartphones",
+    "description": "Self-service is not live because many workers lack smartphones; a kiosk or shared-device option is needed.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-abebe",
+    "created_at": "2025-02-12T10:00:00Z",
+    "linked_document_ids": [
+      "doc-afriflora-golive"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-gp-consolidation",
+    "client_id": "cl-globalpaint",
+    "category": "problem",
+    "title": "47 local payroll vendors, no standard process",
+    "description": "No standardised payroll process across 45 countries, poor documentation and a high error rate.",
+    "status": "resolved",
+    "resolution": "One multinational payroll provider coordinating managed payroll in all countries, regional shared service centres, partner solutions for time capture, and online payslips as the first step to self-service.",
+    "created_by": "p-lotte",
+    "created_at": "2024-07-09T09:00:00Z",
+    "linked_document_ids": [
+      "doc-gp-rfp",
+      "doc-gp-contract",
+      "doc-gp-payslips"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-gp-overtime-de",
+    "client_id": "cl-globalpaint",
+    "category": "problem",
+    "title": "Overtime premium missing on German payslips",
+    "description": "Overtime premium missing on the August payslips for employees at the Hamburg plant.",
+    "status": "open",
+    "resolution": null,
+    "created_by": "p-elena",
+    "created_at": "2026-08-28T08:10:00Z",
+    "linked_document_ids": [
+      "doc-gp-ticket-injection"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-migration",
+    "client_id": "cl-skhitech",
+    "category": "feature_request",
+    "title": "One HR system for a fast-growing plant",
+    "description": "Replace the previous provider with one HR and payroll system that scales with plant growth.",
+    "status": "resolved",
+    "resolution": "Implemented SD Worx InnovaHR on SAP SuccessFactors covering org structure, HR, payroll, time management and performance, with data migration from the previous provider and automated Polish declarations.",
+    "created_by": "p-tomasz",
+    "created_at": "2024-03-12T09:00:00Z",
+    "linked_document_ids": [
+      "doc-sk-migration"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "di-sk-tax-forms",
+    "client_id": "cl-skhitech",
+    "category": "problem",
+    "title": "Manual payslip and tax-form distribution",
+    "description": "Payslips and tax forms were distributed manually, costing HR days every month.",
+    "status": "resolved",
+    "resolution": "Bulk distribution of payslips and tax documents plus manager and employee self-service; manual effort practically eliminated.",
+    "created_by": "p-tomasz",
+    "created_at": "2024-09-10T13:00:00Z",
+    "linked_document_ids": [
+      "doc-sk-selfservice"
+    ],
+    "source": "generated"
+  }
+]

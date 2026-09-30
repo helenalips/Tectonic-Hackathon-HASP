@@ -1,0 +1,93 @@
+[
+  {
+    "person_id": "p-sofie",
+    "client_id": "cl-cityd",
+    "hours": 214.0,
+    "first_date": "2024-01-22",
+    "last_date": "2024-11-14"
+  },
+  {
+    "person_id": "p-sofie",
+    "client_id": "cl-kaneka",
+    "hours": 126.5,
+    "first_date": "2024-10-17",
+    "last_date": "2026-06-30"
+  },
+  {
+    "person_id": "p-jan",
+    "client_id": "cl-kaneka",
+    "hours": 38.0,
+    "first_date": "2024-06-10",
+    "last_date": "2025-03-14"
+  },
+  {
+    "person_id": "p-jan",
+    "client_id": "cl-cityd",
+    "hours": 11.0,
+    "first_date": "2023-12-04",
+    "last_date": "2024-01-15"
+  },
+  {
+    "person_id": "p-marc",
+    "client_id": "cl-kaneka",
+    "hours": 17.5,
+    "first_date": "2025-11-20",
+    "last_date": "2026-03-02"
+  },
+  {
+    "person_id": "p-marc",
+    "client_id": "cl-cityd",
+    "hours": 64.0,
+    "first_date": "2024-04-02",
+    "last_date": "2024-06-28"
+  },
+  {
+    "person_id": "p-noor",
+    "client_id": "cl-kaneka",
+    "hours": 31.0,
+    "first_date": "2026-03-01",
+    "last_date": "2026-06-15"
+  },
+  {
+    "person_id": "p-tomasz",
+    "client_id": "cl-skhitech",
+    "hours": 262.0,
+    "first_date": "2024-01-08",
+    "last_date": "2025-01-20"
+  },
+  {
+    "person_id": "p-elena",
+    "client_id": "cl-skhitech",
+    "hours": 24.0,
+    "first_date": "2025-02-03",
+    "last_date": "2025-03-28"
+  },
+  {
+    "person_id": "p-lotte",
+    "client_id": "cl-afriflora",
+    "hours": 94.0,
+    "first_date": "2024-01-18",
+    "last_date": "2024-06-03"
+  },
+  {
+    "person_id": "p-abebe",
+    "client_id": "cl-afriflora",
+    "hours": 348.0,
+    "first_date": "2024-03-01",
+    "last_date": "2025-09-30"
+  },
+  {
+    "person_id": "p-lotte",
+    "client_id": "cl-globalpaint",
+    "hours": 152.0,
+    "first_date": "2024-07-09",
+    "last_date": "2025-04-30"
+  },
+  {
+    "person_id": "p-elena",
+    "client_id": "cl-globalpaint",
+    "hours": 61.0,
+    "first_date": "2025-05-05",
+    "last_date": "2026-08-28"
+  }
+]

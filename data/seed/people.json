@@ -1,0 +1,133 @@
+[
+  {
+    "id": "p-jan",
+    "name": "Jan Peeters",
+    "role": "Account manager",
+    "team": "BE Commercial",
+    "email": "jan@example.com",
+    "domains": [
+      "commercial"
+    ],
+    "countries": [
+      "BE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-sofie",
+    "name": "Sofie Maes",
+    "role": "Payroll consultant",
+    "team": "BE Payroll & Reward",
+    "email": "sofie@example.com",
+    "domains": [
+      "pay_transparency",
+      "payroll"
+    ],
+    "countries": [
+      "BE"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-tomasz",
+    "name": "Tomasz Nowak",
+    "role": "HR system consultant",
+    "team": "PL Implementation",
+    "email": "tomasz@example.com",
+    "domains": [
+      "hr_system_implementation",
+      "time_management"
+    ],
+    "countries": [
+      "PL"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-lotte",
+    "name": "Lotte de Vries",
+    "role": "Team lead multi-country payroll",
+    "team": "Multi-country Payroll",
+    "email": "lotte@example.com",
+    "domains": [
+      "multi_country_payroll",
+      "hr_system_implementation"
+    ],
+    "countries": [
+      "NL",
+      "ET"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-abebe",
+    "name": "Abebe Tesfaye",
+    "role": "Payroll consultant",
+    "team": "ET Local Support",
+    "email": "abebe@example.com",
+    "domains": [
+      "payroll",
+      "compliance"
+    ],
+    "countries": [
+      "ET"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-elena",
+    "name": "Elena Rossi",
+    "role": "Onboarding specialist",
+    "team": "Global Onboarding",
+    "email": "elena@example.com",
+    "domains": [
+      "onboarding"
+    ],
+    "countries": [
+      "MULTI"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-marc",
+    "name": "Marc Dubois",
+    "role": "Compliance advisor",
+    "team": "BE/FR Legal & Compliance",
+    "email": "marc@example.com",
+    "domains": [
+      "compliance",
+      "pay_transparency"
+    ],
+    "countries": [
+      "BE",
+      "FR"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-noor",
+    "name": "Noor El Amrani",
+    "role": "Change consultant",
+    "team": "BE Consulting",
+    "email": "noor@example.com",
+    "domains": [
+      "change_management",
+      "pay_transparency"
+    ],
+    "countries": [
+      "BE",
+      "NL"
+    ],
+    "source": "generated"
+  },
+  {
+    "id": "p-admin",
+    "name": "TrustGrid Admin",
+    "role": "Platform administrator",
+    "team": "Internal IT",
+    "email": "admin@example.com",
+    "domains": [],
+    "countries": [],
+    "source": "generated"
+  }
+]

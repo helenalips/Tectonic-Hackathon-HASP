@@ -1,0 +1,12 @@
+# Default gitleaks rules. The local .env (git-ignored) and third-party deps are excluded from the dir scan.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Local-only and vendored paths"
+paths = [
+  '''(^|/)\.env$''',
+  '''(^|/)\.venv/''',
+  '''(^|/)node_modules/''',
+  '''\.db$''',
+]

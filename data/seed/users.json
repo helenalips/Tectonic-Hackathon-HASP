@@ -1,0 +1,26 @@
+[
+  {
+    "id": "u-sofie",
+    "person_id": "p-sofie",
+    "email": "sofie@example.com",
+    "role": "consultant"
+  },
+  {
+    "id": "u-tomasz",
+    "person_id": "p-tomasz",
+    "email": "tomasz@example.com",
+    "role": "consultant"
+  },
+  {
+    "id": "u-lotte",
+    "person_id": "p-lotte",
+    "email": "lotte@example.com",
+    "role": "lead"
+  },
+  {
+    "id": "u-admin",
+    "person_id": "p-admin",
+    "email": "admin@example.com",
+    "role": "admin"
+  }
+]
