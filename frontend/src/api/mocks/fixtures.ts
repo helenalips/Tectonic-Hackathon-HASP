@@ -29,6 +29,16 @@ export const people = {
   abebe: { id: "p-abebe", name: "Abebe Tesfaye", role: "Payroll consultant", team: "Payroll Ethiopia" },
   elena: { id: "p-elena", name: "Elena Rossi", role: "Onboarding specialist", team: "Client Onboarding" },
   marc: { id: "p-marc", name: "Marc Dubois", role: "Compliance consultant", team: "Legal & Compliance BE/FR" },
+  noor: { id: "p-noor", name: "Noor El Amrani", role: "Change consultant", team: "Change & Adoption BE" },
+  pieter: { id: "p-pieter", name: "Pieter Janssens", role: "Time & attendance consultant", team: "Workforce Management BE" },
+  katarzyna: { id: "p-katarzyna", name: "Katarzyna Wiśniewska", role: "Payroll lead Poland", team: "Payroll Poland" },
+  lukas: { id: "p-lukas", name: "Lukas Novák", role: "Time & attendance architect", team: "WFM Central Europe" },
+  ines: { id: "p-ines", name: "Inès Moreau", role: "Billing specialist", team: "Finance Operations" },
+  daan: { id: "p-daan", name: "Daan Visser", role: "Account manager", team: "Commercial Netherlands" },
+  hannah: { id: "p-hannah", name: "Hannah Becker", role: "Labour law expert", team: "Legal DE" },
+  yusuf: { id: "p-yusuf", name: "Yusuf Demir", role: "Integration engineer", team: "Technical Services" },
+  amelie: { id: "p-amelie", name: "Amélie Laurent", role: "Reward consultant", team: "Reward & Compliance FR" },
+  bram: { id: "p-bram", name: "Bram Wouters", role: "Payroll consultant", team: "Payroll Belgium" },
 } satisfies Record<string, PersonRef>;
 
 export const emails: Record<string, string> = {
@@ -39,6 +49,16 @@ export const emails: Record<string, string> = {
   "p-abebe": "abebe.tesfaye@example.com",
   "p-elena": "elena.rossi@example.com",
   "p-marc": "marc.dubois@example.com",
+  "p-noor": "noor.elamrani@example.com",
+  "p-pieter": "pieter.janssens@example.com",
+  "p-katarzyna": "katarzyna.wisniewska@example.com",
+  "p-lukas": "lukas.novak@example.com",
+  "p-ines": "ines.moreau@example.com",
+  "p-daan": "daan.visser@example.com",
+  "p-hannah": "hannah.becker@example.com",
+  "p-yusuf": "yusuf.demir@example.com",
+  "p-amelie": "amelie.laurent@example.com",
+  "p-bram": "bram.wouters@example.com",
 };
 
 // ------------------------------------------------------------------ trust helper
@@ -340,7 +360,21 @@ const reliability = {
   lotte: { score: 86, reasons: ["14 of 16 claims later confirmed", "Works across 6 payroll countries"] },
   abebe: { score: 72, reasons: ["4 of 6 claims later confirmed", "Local payroll knowledge for Ethiopia"] },
   elena: { score: 76, reasons: ["5 of 6 claims later confirmed", "Mostly onboarding documents"] },
+  noor: { score: 81, reasons: ["8 of 9 claims later confirmed", "Ran change programmes at 4 clients"] },
+  pieter: { score: 90, reasons: ["17 of 18 claims later confirmed", "Solved 5 time-registration cases"] },
+  katarzyna: { score: 85, reasons: ["12 of 14 claims later confirmed", "Owner of the Polish payroll rules"] },
+  lukas: { score: 83, reasons: ["10 of 12 claims later confirmed", "Designed 3 clocking roll-outs"] },
+  ines: { score: 87, reasons: ["20 of 22 billing notes matched the contract", "Fixed 3 missed-discount invoices"] },
+  daan: { score: 74, reasons: ["6 of 8 claims later confirmed", "Few documents in the last 6 months"] },
+  hannah: { score: 92, reasons: ["Labour law sign-off on 30+ cases", "No conflicts resolved against her"] },
+  yusuf: { score: 78, reasons: ["7 of 9 claims later confirmed", "Mostly technical documents"] },
+  amelie: { score: 84, reasons: ["9 of 10 claims later confirmed", "Pay equity audits in FR and BE"] },
+  bram: { score: 80, reasons: ["11 of 13 claims later confirmed", "Belgian payroll rules (JC 200, JC 116)"] },
 };
+
+export const reliabilityById: Record<string, { score: number; reasons: string[] }> = Object.fromEntries(
+  Object.entries(reliability).map(([k, v]) => [`p-${k}`, v]),
+);
 
 const kanekaPeople: PersonContribution[] = [
   { person: people.jan, hours: 52, first_date: "2025-01-15", last_date: "2026-06-30", domains: ["commercial"], reliability: reliability.jan },
@@ -509,7 +543,7 @@ function simpleDoc(
   };
 }
 
-const good = (country: string, recencyReason = "Updated 2 months ago") =>
+export const good = (country: string, recencyReason = "Updated 2 months ago") =>
   trust({
     recency: [0.9, recencyReason],
     ownership: owned,
@@ -541,11 +575,45 @@ const sk: ClientRecord = {
   consistency: { open_conflicts: 1, open_duplicates: 0, linked_duplicates: 0, consistent: false },
   timeline: [
     simpleDoc("doc-sk-onboarding", "onboarding", "Onboarding note: plant ramp-up", "Current headcount is 650, growing to 2,000.", "2026-08-12T09:00:00Z", people.elena, people.tomasz, trust({ recency: [1, "Updated 1 month ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.6, "Onboarding specialist"], corroboration: [0, "Only 1 document"], no_open_conflicts: openConflict })),
+    simpleDoc("doc-sk-timereg-email", "email", "Time registration stays out of scope until 2027", "Confirming the steering committee decision: SK hi-tech keeps its existing badge terminals. Please do not propose the digital clocking app again before the 2027 plant expansion review.", "2025-11-20T15:00:00Z", people.katarzyna, people.katarzyna, trust({ recency: [0.75, "Written 10 months ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.9, "Payroll lead Poland, reliability 85"], corroboration: [1, "Confirmed by 3 documents"], no_open_conflicts: noConflict })),
+    simpleDoc("doc-sk-timereg-meeting", "meeting", "Steering committee: no modernisation of time registration", "HR director decided not to modernise time registration in this phase. Existing badge terminals stay; the digital clocking app is parked until 2027.", "2025-11-18T10:00:00Z", people.tomasz, people.tomasz, trust({ recency: [0.75, "Updated 10 months ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.9, "HR system expert, reliability 84"], corroboration: [1, "Confirmed by 3 documents"], no_open_conflicts: noConflict })),
+    simpleDoc("doc-sk-payroll-golive", "note", "Payroll go-live on InnovaHR", "First payroll run on InnovaHR went live. Monthly payroll, paid on the last working day.", "2022-02-28T09:00:00Z", people.tomasz, people.tomasz, good("PL", "Updated 4 years ago")),
     simpleDoc("doc-sk-contract", "contract", "InnovaHR implementation contract", "Scope: HR and payroll for 500 employees.", "2021-06-03T09:00:00Z", people.tomasz, people.tomasz, trust({ recency: [0.1, "Signed 5 years ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.9, "HR system expert"], corroboration: [0, "Only 1 document"], no_open_conflicts: openConflict })),
   ],
-  claims: [],
+  claims: [
+    {
+      id: "clm-sk-timereg",
+      key: "time_registration_scope",
+      value: "out_of_scope_until_2027",
+      unit: null,
+      status: "active",
+      valid_from: "2025-11-18",
+      evidence_count: 3,
+      evidence: [
+        { document_id: "doc-sk-timereg-meeting", title: "Steering committee: no modernisation of time registration", author: people.tomasz, added_at: "2025-11-18T10:00:00Z", relation: "origin" },
+        { document_id: "doc-sk-timereg-email", title: "Time registration stays out of scope until 2027", author: people.katarzyna, added_at: "2025-11-20T15:00:00Z", relation: "confirmation" },
+        { document_id: "doc-sk-onboarding", title: "Onboarding note: plant ramp-up", author: people.elena, added_at: "2026-08-12T09:00:00Z", relation: "confirmation" },
+      ],
+      trust: trust({ recency: [0.75, "Last confirmed 1 month ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.9, "Stated by the record owner"], corroboration: [1, "Confirmed by 3 documents"], no_open_conflicts: noConflict }),
+    },
+    {
+      id: "clm-sk-headcount",
+      key: "headcount",
+      value: "500",
+      unit: "employees",
+      status: "active",
+      valid_from: "2021-06-03",
+      evidence_count: 1,
+      evidence: [{ document_id: "doc-sk-contract", title: "InnovaHR implementation contract", author: people.tomasz, added_at: "2021-06-03T09:00:00Z", relation: "origin" }],
+      trust: trust({ recency: [0.1, "Signed 5 years ago"], ownership: owned, country_relevance: countryOk("PL"), author_expertise: [0.9, "HR system expert"], corroboration: [0, "Only 1 document"], no_open_conflicts: openConflict }),
+    },
+  ],
   dossier_items: [],
-  people: [{ person: people.tomasz, hours: 120, first_date: "2021-06-01", last_date: "2022-02-28", domains: ["hr_system_implementation"], reliability: reliability.tomasz }],
+  people: [
+    { person: people.tomasz, hours: 120, first_date: "2021-06-01", last_date: "2025-11-18", domains: ["hr_system_implementation"], reliability: reliability.tomasz },
+    { person: people.katarzyna, hours: 64, first_date: "2022-01-10", last_date: "2025-11-20", domains: ["payroll", "time_registration"], reliability: reliability.katarzyna },
+    { person: people.elena, hours: 12, first_date: "2026-08-12", last_date: "2026-08-12", domains: ["onboarding"], reliability: reliability.elena },
+  ],
   experts: { record_expert: { person: people.tomasz, kind: "record_expert", reason: "Led the implementation (120 h).", reliability: reliability.tomasz, hours_on_client: 120, solved_count: null, top_documents: [], contact: emails["p-tomasz"] }, problem_expert: null },
 };
 
@@ -600,7 +668,7 @@ export const records: Record<string, ClientRecord> = {
 };
 
 export const demoUsers: Record<string, { user_id: string; person: PersonRef; role: "consultant" | "lead" | "admin"; assigned: string[] }> = {
-  "sofie@example.com": { user_id: "u-sofie", person: people.sofie, role: "consultant", assigned: ["cl-cityd", "cl-kaneka"] },
+  "sofie@example.com": { user_id: "u-sofie", person: people.sofie, role: "consultant", assigned: ["cl-cityd", "cl-kaneka", "cl-skhitech"] },
   "tomasz@example.com": { user_id: "u-tomasz", person: people.tomasz, role: "consultant", assigned: ["cl-skhitech"] },
   "lotte@example.com": { user_id: "u-lotte", person: people.lotte, role: "lead", assigned: [] },
   "admin@example.com": { user_id: "u-admin", person: people.marc, role: "admin", assigned: [] },

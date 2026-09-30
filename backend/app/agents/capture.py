@@ -70,6 +70,9 @@ CLAIM_KEYS: tuple[str, ...] = (
     "sla_response_hours",
     "pay_gap_method",
     "contact_person",
+    "declined_scope",
+    "payroll_cutoff_day",
+    "invoice_terms_days",
 )
 ClaimKey = Literal[
     "discount_pct",
@@ -85,6 +88,9 @@ ClaimKey = Literal[
     "sla_response_hours",
     "pay_gap_method",
     "contact_person",
+    "declined_scope",
+    "payroll_cutoff_day",
+    "invoice_terms_days",
 ]
 
 # Fictional generated people (contracts/schema.md §7); used to resolve contact_person names.
@@ -97,13 +103,45 @@ KNOWN_PEOPLE: dict[str, str] = {
     "elena rossi": "p-elena",
     "marc dubois": "p-marc",
     "noor el amrani": "p-noor",
+    "katrin huber": "p-katrin",
+    "ruben claes": "p-ruben",
+    "femke jansen": "p-femke",
+    "piotr zielinski": "p-piotr",
+    "an wouters": "p-an",
+    "lars eriksen": "p-lars",
+    "pieter bakker": "p-pieter",
+    "ines laurent": "p-ines",
+    "daan mertens": "p-daan",
 }
+
+# Modules a client can explicitly decline (declined_scope values) and the phrases that name them.
+# A draft that PROPOSES a declined module conflicts with the declined_scope claim (horizontal rule).
+SCOPE_MODULES: dict[str, tuple[str, ...]] = {
+    "digital time registration": (
+        "digital time registration", "digital clocking", "clocking system", "clocking terminal", "time clock",
+        "badge terminal", "badge reader", "electronic time registration", "time registration system",
+        "digital timesheet", "digital time sheet", "time registration app", "time registration",
+    ),
+    "shift planning": ("shift planning", "rostering", "roster planning", "workforce scheduling"),
+    "employee self-service app": ("self-service app", "self service app", "mobile app", "employee app"),
+}
+_DECLINE_RE = re.compile(
+    r"\b(declin\w*|decided to keep|decided against|decided not to|chose to keep|keep (?:the |their |its )?paper"
+    r"|keeps (?:the |their |its )?paper|do not propose|don't propose|not to propose|(?:will|shall) not propose|won't propose"
+    r"|rejected|said no to"
+    r"|not interested in|no appetite for|will not (?:introduce|implement)|opted out of)\b"
+)
+_PROPOSE_RE = re.compile(
+    r"\b(propos\w*|suggest\w*|recommend\w*|introduc\w*|roll(?:ing)? out|rollout|implement\w*|moderni[sz]\w*"
+    r"|digiti[sz]\w*|switch(?:ing)? to|mov(?:e|ing) to|upgrad\w*|offer\w*|install\w*|launch\w*|pilot\w*"
+    r"|replac\w* [\w ]{1,30} with|set(?:ting)? up|add(?:ing)?)\b"
+)
 
 _NUMBER_WORDS = {
     "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
     "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
     "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
-    "twenty-five": 25, "thirty": 30, "forty": 40, "fifty": 50, "a single": 1, "single": 1,
+    "twenty-five": 25, "thirty": 30, "forty": 40, "forty-five": 45, "fifty": 50, "sixty": 60, "ninety": 90, "a single": 1, "single": 1,
 }
 _MONTHS = {
     "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6, "july": 7,
@@ -195,6 +233,19 @@ def parse_date(raw: str) -> str | None:
     return None
 
 
+def _module_of(text: str) -> str | None:
+    """The SCOPE_MODULES label named in a (lowercase) text, longest phrase first."""
+    low = _clean(text)
+    if low in SCOPE_MODULES:
+        return low
+    best: tuple[int, str] | None = None
+    for module, phrases in SCOPE_MODULES.items():
+        for ph in phrases:
+            if ph in low and (best is None or len(ph) > best[0]):
+                best = (len(ph), module)
+    return best[1] if best else None
+
+
 def normalize_value(key: str, raw: str) -> tuple[str, str | None] | None:
     """Normalize a raw value for a taxonomy key. Returns (value, unit) or None if invalid."""
     if key not in CLAIM_KEYS or raw is None:
@@ -279,6 +330,19 @@ def normalize_value(key: str, raw: str) -> tuple[str, str | None] | None:
     if key == "pay_gap_method":
         return (s, None) if len(s) <= 80 and re.search(r"[a-z]", s) else None
 
+    if key == "declined_scope":
+        return (_module_of(s), None) if _module_of(s) else None
+
+    if key == "payroll_cutoff_day":
+        s2 = re.sub(r"(st|nd|rd|th)\b", "", re.sub(r"\b(the|day|of the month|each month|every month)\b", "", s)).strip()
+        n = _parse_number(s2)
+        return (_fmt(n), "day of month") if n is not None and float(n).is_integer() and 1 <= n <= 31 else None
+
+    if key == "invoice_terms_days":
+        s2 = re.sub(r"\b(calendar |working )?days?\b|\bnet\b", "", s).strip()
+        n = _parse_number(s2)
+        return (_fmt(n), "days") if n is not None and float(n).is_integer() and 1 <= n <= 180 else None
+
     if key == "contact_person":
         if re.fullmatch(r"p-[a-z0-9-]{1,36}", s):
             return s, None
@@ -325,6 +389,20 @@ _RULES: list[tuple[str, re.Pattern[str], float]] = [
     ("self_service_status", re.compile(r"self[- ]service(?:\s+for\s+[\w ]{1,40}?)?\s+(?:is\s+|was\s+|has\s+)?(not live yet|isn't live yet|is not live yet|not yet live|not live|planned|went live|live|not planned)"), 0.8),
     ("self_service_status", re.compile(r"((?:no plans?|not planning)\s+(?:for\s+)?)self[- ]service"), 0.8),
     ("sla_response_hours", re.compile(r"(?:sla|response time|respond within|response within|reply within)[^.\n]{0,30}?(\d+\s*(?:h\b|hours?|business days?|working days?|days?)|(?:one|two|three) (?:business |working )?days?)"), 0.85),
+    ("payroll_cutoff_day", re.compile(
+        rf"cut[- ]?off(?:\s+(?:day|date))?(?:\s+for\s+(?:the\s+)?(?:monthly\s+)?(?:payroll|pay run|variable pay|changes|inputs)(?:\s+inputs)?)?"
+        rf"\s*(?:is|was|stays|stays at|remains|moves to|moved to|of|on|at|:|=)?\s*(?:on\s+|at\s+)?(?:the\s+|day\s+)?"
+        rf"(\d{{1,2}}(?:st|nd|rd|th)?)(?!\d|[.,]\d)(?!\s*(?:%|hours?|h\b|employees|days?|working|business|weeks?|months?|{_MONTH_NAMES}\b|of\s+{_MONTH_NAMES}\b|[/-]))"), 0.85),
+    ("payroll_cutoff_day", re.compile(
+        r"(?:the\s+)?(\d{1,2}(?:st|nd|rd|th))(?:\s+of\s+(?:the|each|every)\s+month)?\s+(?:is|as|stays|remains)\s+(?:the\s+)?(?:payroll\s+|monthly\s+)?cut[- ]?off"), 0.8),
+    ("invoice_terms_days", re.compile(r"payment terms?\s*(?:of|are|is|stay at|remain|:)?\s*(\d{1,3}|thirty|forty|fifty|sixty|twenty)\s*(?:calendar\s+)?days"), 0.85),
+    ("invoice_terms_days", re.compile(
+        r"(?:invoices?\s+(?:are\s+|is\s+|will be\s+)?(?:payable|due|paid)|payment\s+(?:is\s+)?due|payable)\s+within\s+(\d{1,3}|thirty|forty|fifty|sixty|twenty)\s*(?:calendar\s+)?days"), 0.85),
+    ("invoice_terms_days", re.compile(r"\b(\d{1,3})\s*days\s+net\b"), 0.75),
+    ("invoice_terms_days", re.compile(r"\bnet\s+(\d{1,3})\s*days\b"), 0.75),
+    ("contact_person", re.compile(
+        rf"({_PEOPLE_RE})\s+(?:remains|is|stays|will be|will remain|becomes)\s+(?:your|the|our)\s+(?:main\s+|single\s+)?"
+        rf"(?:contact person|point of contact|contact|account owner)"), 0.8),
     ("contact_person", re.compile(rf"(?:contact person|point of contact|main contact|account owner)[^.\n]{{0,25}}?({_PEOPLE_RE})"), 0.8),
 ]
 
@@ -392,10 +470,41 @@ def _rule_extract(text: str) -> list[ExtractedClaim]:
     for extra in (_pay_gap_method(low), _provider_count(low)):
         if extra:
             out.append(extra)
+    for module, quote in _scope_sentences(text, _DECLINE_RE):
+        out.append(ExtractedClaim("declined_scope", module, None, 0.8, quote))
     # InnovaHR is built on SuccessFactors: report the product the client actually uses.
     if any(c.key == "hr_system" and c.value == "sd worx innovahr" for c in out):
         out = [c for c in out if not (c.key == "hr_system" and c.value == "sap successfactors")]
     return _unique(out)
+
+
+_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?;])\s+|\n+")
+
+
+def _scope_sentences(text: str, marker: re.Pattern[str]) -> list[tuple[str, str]]:
+    """(module, sentence) for every sentence that names a SCOPE_MODULES module next to `marker`."""
+    out: list[tuple[str, str]] = []
+    for sentence in _SENTENCE_SPLIT_RE.split(text or ""):
+        low = re.sub(r"\s+", " ", sentence.lower()).strip()
+        if not low or not marker.search(low):
+            continue
+        module = _module_of(low)
+        if module and module not in {m for m, _ in out}:
+            out.append((module, re.sub(r"\s+", " ", sentence).strip()[:200]))
+    return out
+
+
+def extract_proposals(text: str) -> list[tuple[str, str]]:
+    """Modules a text PROPOSES (not declines): [(module, sentence)]. Used by the live draft check."""
+    clean = to_plain_text(text)
+    declined = {m for m, _ in _scope_sentences(clean, _DECLINE_RE)}
+    out = []
+    for module, sentence in _scope_sentences(clean, _PROPOSE_RE):
+        low = sentence.lower()
+        if module in declined or re.search(r"\b(not|no|never|without)\b[\w ]{0,20}" + _PROPOSE_RE.pattern, low):
+            continue
+        out.append((module, sentence))
+    return out
 
 
 def text_quote(text: str, fragment: str) -> str:

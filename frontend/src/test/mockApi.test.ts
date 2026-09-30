@@ -30,7 +30,7 @@ describe("mock API (demo scenarios)", () => {
 
   it("refuses writes on clients the consultant is not assigned to", async () => {
     await mockFetch("POST", "/auth/login", { email: "sofie@example.com", password: "demo" });
-    const r = await mockFetch("POST", "/events", { client_id: "cl-skhitech", type: "note", text: "Anything at all" });
+    const r = await mockFetch("POST", "/events", { client_id: "cl-afriflora", type: "note", text: "Anything at all" });
     expect(r.status).toBe(403);
   });
 });

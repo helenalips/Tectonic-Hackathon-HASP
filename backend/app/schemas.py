@@ -110,6 +110,9 @@ class PersonContribution(BaseModel):
     last_date: date
     domains: list[str]
     reliability: PersonReliability
+    # v2 (set on person profiles): which client, label data-minimized via rbac.client_label
+    client_id: str | None = None
+    client_label: str | None = None
 
 
 class DossierItemView(BaseModel):
@@ -391,3 +394,16 @@ class PersonProfileV2(PersonProfile):
     documents: list[TopDocument] = Field(default_factory=list)
     clients_count: int = 0
     total_hours: float = 0
+
+
+class PersonDirectoryEntry(BaseModel):
+    """GET /people: one row of the people directory."""
+
+    person: PersonRef
+    domains: list[str]
+    countries: list[str]
+    reliability: PersonReliability
+    title: str = ""
+    location: str = ""
+    solved_count: int = 0
+    solved_clients_count: int = 0

@@ -184,6 +184,9 @@ Fixed list. The LLM and the mock rules may only emit these keys. Unknown keys ar
 | `sla_response_hours` | integer string | `hours` | `24` |
 | `pay_gap_method` | lowercase short label | – | `integrated system with job architecture` |
 | `contact_person` | Person id | – | `p-jan` |
+| `declined_scope` | module label: `digital time registration \| shift planning \| employee self-service app` | – | `digital time registration` |
+| `payroll_cutoff_day` | integer string 1-31 (day of month) | `day of month` | `20` |
+| `invoice_terms_days` | integer string 1-180 | `days` | `30` |
 
 Normalization (applied before any comparison): trim, lowercase, `10 %`/`10%`/`ten percent` → `10`,
 `1.000`/`1,000` → `1000`, dates in any common form → ISO, `€`/`EUR` stripped into `unit`.
@@ -191,6 +194,19 @@ Normalization (applied before any comparison): trim, lowercase, `10 %`/`10%`/`te
 "Semantically similar key" for conflict detection means: same key, or keys in the same group:
 `{discount_pct, price_model}`, `{headcount, headcount_target}`.
 A `price_model = full_price` claim conflicts with an active `discount_pct > 0` claim.
+
+v2 additions:
+- `declined_scope` is multi-valued: a client can decline several modules, so two `declined_scope` claims never
+  conflict with each other. It is extracted when a sentence names a module next to a decline marker
+  ("decided to keep paper time registration", "declined the shift planning module", "do not propose a digital
+  clocking system"). A text that PROPOSES a declined module ("we propose a digital clocking system") conflicts
+  with the active `declined_scope` claim for that module (severity high). Proposals are detected by the live
+  draft check only; they are never stored as claims.
+- `payroll_cutoff_day`: "cut-off is on the 20th", "the 25th is the payroll cut-off" → `20`, `25`. Dates
+  ("cut-off on 15 March 2026") are not cut-off days.
+- `invoice_terms_days`: "payable within 30 days", "payment terms of 45 days", "60 days net" → `30`, `45`, `60`.
+- Severity: high for `discount_pct`, `price_model`, `invoice_terms_days`, `declined_scope`; medium for
+  headcounts, dates, counts, `sla_response_hours`, `payroll_cutoff_day`, `contact_person`; low otherwise.
 
 ## 4. Domain taxonomy (Person.domains and matching)
 
@@ -265,10 +281,21 @@ Scenario → client mapping:
 | f | Global Paint | a ticket containing "ignore previous instructions…" → flagged suspicious, no instructions followed |
 | g | Kaneka | meeting note restating the 10 % discount, a forwarded copy of Jan's email, and the same open question twice → linked, "confirmed by 3 documents" |
 
+### v2 seed (live draft check demo)
+
+On top of the five real clients: four clearly fictional clients (`source: generated`): `cl-nordvik` Nordvik
+Logistics (BE, Logistics), `cl-helio` Helio Retail Group (NL, Retail), `cl-maas` Maas & Partners Care (BE,
+Healthcare), `cl-alpenwerk` Alpenwerk Tools (DE, Industrial tools). 17 SD Worx people (+ admin) with profile
+fields in `data/seed/profiles.json` (title, location, languages, bio, years_at_sdworx). ~100 documents,
+8 recurring problem types at 3+ clients each, solved by different people. `demo_inputs.json` has a
+`compose` section with drafts for `POST /check`.
+
 ## 8. Security-relevant contract rules
 
 - Every request and response body is a strict Pydantic model (`extra = "forbid"`).
 - `password_hash`, `content_hash` internals and AuditLog are never exposed to consultants.
-- Cross-client results (`/search/precedents`, vertical check, problem expert) return only:
+- `POST /check` is read-only: it never stores documents, claims, conflicts or dedup decisions; it writes one
+  AuditLog `view` row (entity `check`, no text). A suspicious draft returns no findings.
+- Cross-client results (`/search/precedents`, vertical check, `/check` similar cases, problem expert) return only:
   `client_label` (sector + country, not the client name, unless the user is assigned or lead/admin),
   `category`, `resolution_summary` (figures masked), `date`, `expert`, `similarity`.

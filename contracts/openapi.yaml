@@ -98,11 +98,31 @@ paths:
       responses:
         "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Precedent" } } } } }
 
+  /people:
+    get:
+      summary: People directory (v2). Platform accounts without domains are left out.
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/PersonDirectoryEntry" } } } } }
   /people/{person_id}:
     get:
-      parameters: [{ name: person_id, in: path, required: true, schema: { type: string, maxLength: 40 } }]
+      summary: Person profile (v2) with profile fields, solved cases and top documents. Cross-client labels data-minimized.
+      parameters: [{ name: person_id, in: path, required: true, schema: { type: string, maxLength: 40, pattern: "^p-[a-z0-9-]{1,38}$" } }]
       responses:
-        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/PersonProfile" } } } }
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/PersonProfileV2" } } } }
+        "404": { $ref: "#/components/responses/Error" }
+
+  /check:
+    post:
+      summary: >
+        Live draft check (v2). Compares an email/chat draft with THIS client's record (horizontal) and with
+        similar cases at OTHER clients (vertical). Read-only: stores nothing except one AuditLog "view" row.
+        Any authenticated user may check any client; cross-client parts are data-minimized like precedents.
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/CheckRequest" } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/CheckResult" } } } }
+        "404": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
 
   /ask:
     post:
@@ -235,6 +255,8 @@ components:
         last_date: { type: string, format: date }
         domains: { type: array, items: { type: string } }
         reliability: { $ref: "#/components/schemas/PersonReliability" }
+        client_id: { type: [string, "null"], description: "v2: set on person profiles" }
+        client_label: { type: [string, "null"], description: "v2: client name only if the user may see it, else sector + country" }
     ClientRecord:
       type: object
       properties:
@@ -370,6 +392,121 @@ components:
         countries: { type: array, items: { type: string } }
         reliability: { $ref: "#/components/schemas/PersonReliability" }
         contributions: { type: array, items: { $ref: "#/components/schemas/PersonContribution" } }
+    TopDocument:
+      type: object
+      properties: { id: { type: string }, title: { type: string }, trust: { $ref: "#/components/schemas/TrustScore" } }
+    SolvedCase:
+      type: object
+      properties:
+        dossier_item_id: { type: string }
+        client_label: { type: string }
+        category: { $ref: "#/components/schemas/Category" }
+        title: { type: string }
+        date: { type: string, format: date }
+    PersonProfileV2:
+      allOf:
+        - { $ref: "#/components/schemas/PersonProfile" }
+        - type: object
+          properties:
+            title: { type: string }
+            location: { type: string }
+            languages: { type: array, items: { type: string } }
+            bio: { type: string }
+            years_at_sdworx: { type: [integer, "null"] }
+            solved_cases: { type: array, items: { $ref: "#/components/schemas/SolvedCase" } }
+            documents: { type: array, items: { $ref: "#/components/schemas/TopDocument" } }
+            clients_count: { type: integer }
+            total_hours: { type: number }
+    PersonDirectoryEntry:
+      type: object
+      properties:
+        person: { $ref: "#/components/schemas/PersonRef" }
+        domains: { type: array, items: { type: string } }
+        countries: { type: array, items: { type: string } }
+        reliability: { $ref: "#/components/schemas/PersonReliability" }
+        title: { type: string }
+        location: { type: string }
+        solved_count: { type: integer }
+        solved_clients_count: { type: integer }
+
+    CheckRequest:
+      type: object
+      additionalProperties: false
+      required: [client_id, text]
+      properties:
+        client_id: { type: string, maxLength: 40, pattern: "^cl-[a-z0-9-]{1,36}$" }
+        channel: { type: string, enum: [email, chat, note, ticket], default: email }
+        subject: { type: [string, "null"], maxLength: 200 }
+        text: { type: string, minLength: 1, maxLength: 20000 }
+    SourceDoc:
+      type: object
+      properties:
+        document_id: { type: string }
+        title: { type: string, description: "Neutral title for other clients the user may not see by name" }
+        type: { $ref: "#/components/schemas/DocType" }
+        author: { $ref: "#/components/schemas/PersonRef" }
+        date: { type: string, format: date-time }
+        trust: { $ref: "#/components/schemas/TrustScore" }
+        excerpt: { type: string, maxLength: 400, description: "Figures masked on vertical sources" }
+        client_label: { type: [string, "null"], description: "Set on vertical sources only" }
+    HorizontalFinding:
+      type: object
+      properties:
+        kind: { type: string, enum: [conflict, confirmed, new_fact, duplicate_document] }
+        key: { type: [string, "null"] }
+        key_label: { type: string }
+        draft_value: { type: [string, "null"] }
+        draft_quote: { type: string, description: "Exact substring of the submitted text (the sentence), for highlighting" }
+        record_value: { type: [string, "null"] }
+        record_claim: { oneOf: [{ $ref: "#/components/schemas/ClaimView" }, { type: "null" }] }
+        sources: { type: array, items: { $ref: "#/components/schemas/SourceDoc" } }
+        severity: { oneOf: [{ $ref: "#/components/schemas/Severity" }, { type: "null" }] }
+        explanation: { type: string }
+        suggested_rewrite: { type: [string, "null"], description: "Replacement for draft_quote, consistent with the record (conflicts only). All conflicts in the same sentence are fixed together." }
+    SimilarCase:
+      type: object
+      description: Data-minimized like Precedent.
+      properties:
+        dossier_item_id: { type: string }
+        client_label: { type: string }
+        category: { $ref: "#/components/schemas/Category" }
+        title: { type: string }
+        resolution_summary: { type: string }
+        approach: { type: [string, "null"] }
+        date: { type: string, format: date }
+        similarity: { type: number }
+        status: { type: string, enum: [open, resolved] }
+        solvers: { type: array, items: { $ref: "#/components/schemas/PersonRef" } }
+        sources: { type: array, items: { $ref: "#/components/schemas/SourceDoc" } }
+    ApproachWarning:
+      type: object
+      properties:
+        explanation: { type: string }
+        draft_approach: { type: string }
+        proven_approach: { type: string }
+        draft_quote: { type: [string, "null"] }
+        suggested_rewrite: { type: [string, "null"] }
+    DimensionStatus:
+      type: object
+      properties:
+        status: { type: string, enum: [consistent, conflict, info, empty] }
+        headline: { type: string }
+    CheckResult:
+      type: object
+      properties:
+        client: { $ref: "#/components/schemas/ClientSummary" }
+        detected_category: { oneOf: [{ $ref: "#/components/schemas/Category" }, { type: "null" }] }
+        topic: { type: [string, "null"] }
+        horizontal: { $ref: "#/components/schemas/DimensionStatus" }
+        horizontal_findings: { type: array, items: { $ref: "#/components/schemas/HorizontalFinding" } }
+        vertical: { $ref: "#/components/schemas/DimensionStatus" }
+        similar_cases: { type: array, items: { $ref: "#/components/schemas/SimilarCase" } }
+        approach_warning: { oneOf: [{ $ref: "#/components/schemas/ApproachWarning" }, { type: "null" }] }
+        experts: { $ref: "#/components/schemas/Experts" }
+        problem_experts: { type: array, items: { $ref: "#/components/schemas/Expert" } }
+        suspicious: { type: boolean }
+        suspicious_reason: { type: [string, "null"] }
+        mode: { type: string, enum: [llm, mock] }
 
     AskRequest:
       type: object

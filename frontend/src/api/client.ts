@@ -17,6 +17,8 @@ import type {
   Solution,
   SolutionRequest,
   Category,
+  CheckRequest,
+  CheckResult,
 } from "./types";
 
 /**
@@ -92,7 +94,7 @@ async function send(method: Method, path: string, body?: unknown): Promise<RawRe
   return { status: res.status, body: parsed };
 }
 
-async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
+export async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
   const { status, body: data } = await send(method, path, body);
   if (status === 401 && path !== "/auth/login" && path !== "/auth/me") {
     onUnauthorized?.();
@@ -138,5 +140,50 @@ export const api = {
   person: (personId: string) => request<PersonProfile>("GET", `/people/${seg(personId)}`),
 
   ask: (body: AskRequest) => request<Answer>("POST", "/ask", body),
+  /** v2 live draft check. Falls back to the built-in preview engine when the backend lacks /check. */
+  check: (body: CheckRequest) => checkWithFallback(body),
   buildSolution: (body: SolutionRequest) => request<Solution>("POST", "/solutions", body),
 };
+
+// ------------------------------------------------------------------ v2: /check with preview fallback
+
+export interface CheckResponse {
+  result: CheckResult;
+  /** True when the answer came from the built-in preview engine instead of the backend. */
+  preview: boolean;
+}
+
+type PreviewListener = (on: boolean) => void;
+const previewListeners = new Set<PreviewListener>();
+let previewOn = USE_MOCKS;
+
+/** Subscribe to "some data on screen is preview data" (drives the subtle badge in the top bar). */
+export function onPreviewChange(fn: PreviewListener): () => void {
+  previewListeners.add(fn);
+  fn(previewOn);
+  return () => previewListeners.delete(fn);
+}
+
+function markPreview(on: boolean) {
+  if (on === previewOn) return;
+  previewOn = on;
+  previewListeners.forEach((fn) => fn(on));
+}
+
+async function checkWithFallback(body: CheckRequest): Promise<CheckResponse> {
+  if (USE_MOCKS) {
+    return { result: await request<CheckResult>("POST", "/check", body), preview: true };
+  }
+  try {
+    const result = await request<CheckResult>("POST", "/check", body);
+    markPreview(false);
+    return { result, preview: false };
+  } catch (err) {
+    // Endpoint not deployed yet (404/405/501) or backend unreachable: keep the UI alive with preview data.
+    const missing = err instanceof ApiError ? [404, 405, 500, 501, 502, 503].includes(err.status) : err instanceof TypeError;
+    if (!missing) throw err;
+    const { previewCheck } = await import("./mocks/server");
+    markPreview(true);
+    return { result: previewCheck(body), preview: true };
+  }
+}

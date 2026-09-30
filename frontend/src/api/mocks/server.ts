@@ -27,7 +27,9 @@ import type {
   SolutionRequest,
   TimelineItem,
 } from "../types";
+import type { CheckRequest } from "../types";
 import * as fx from "./fixtures";
+import { runCheck } from "./check";
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 
@@ -35,9 +37,18 @@ const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 const state = {
   records: clone(fx.records),
   conflicts: clone(fx.conflicts),
-  user: null as null | (typeof fx.demoUsers)[string],
+  user: (import.meta.env.VITE_MOCK_AUTOLOGIN === "true" ? fx.demoUsers["sofie@example.com"] : null) as null | (typeof fx.demoUsers)[string],
   seq: 1,
+  /** Facts superseded via "Update the record" (read by the preview check engine). */
+  overrides: new Set<string>(),
+  /** conflict id -> override key applied when it is resolved as updated_record. */
+  overrideFor: {} as Record<string, string>,
 };
+
+/** Preview engine for /check, also used as the fallback when the real backend has no /check yet. */
+export function previewCheck(body: CheckRequest) {
+  return runCheck(body, { records: state.records, conflicts: state.conflicts, overrides: state.overrides });
+}
 
 const ok = (body: unknown, status = 200): RawResponse => ({ status, body });
 const fail = (status: number, detail: string): RawResponse => ({ status, body: { detail } });
@@ -116,6 +127,7 @@ function captureEvent(body: EventCreate): RawResponse {
     };
     within.push(conflict);
     state.conflicts.push(conflict);
+    state.overrideFor[conflict.id] = "kaneka_discount";
     newClaims.push({ ...clone(fx.kanekaFullPriceClaim), id: nextId("clm"), evidence: [{ document_id: docId, title, author, added_at: nowIso(), relation: "origin" }] });
   } else if (isKaneka && /10 ?%|ten percent|discount/.test(t)) {
     const claim = record.claims.find((c) => c.id === "clm-kan-discount");
@@ -137,6 +149,28 @@ function captureEvent(body: EventCreate): RawResponse {
       reason: isCopy ? "Same text as an existing email (forwarded copy)" : "Same fact: discount_pct = 10 %",
     });
     record.consistency.linked_duplicates += 1;
+  }
+
+  if (body.client_id === "cl-skhitech" && /digital clocking|clocking app|time[- ]registration|badge terminal/.test(t)) {
+    const existing = record.timeline.find((d) => d.document_id === "doc-sk-timereg-meeting");
+    const conflict: Conflict = {
+      id: nextId("cf"),
+      client_id: body.client_id,
+      scope: "within_record",
+      severity: "high",
+      explanation: "This proposes digital clocking, but SK hi-tech declined modernising time registration on 18 Nov 2025.",
+      new_claim: null,
+      existing_claim: record.claims.find((c) => c.key === "time_registration_scope") ?? null,
+      new_document: { id: docId, title, excerpt: text.slice(0, 300), author, date: nowIso() },
+      existing_document: existing ? { id: existing.document_id, title: existing.title, excerpt: existing.excerpt, author: existing.author, date: existing.date } : null,
+      resolution: "pending",
+      resolution_note: null,
+      resolved_by: null,
+      created_at: nowIso(),
+    };
+    within.push(conflict);
+    state.conflicts.push(conflict);
+    state.overrideFor[conflict.id] = "sk_timereg";
   }
 
   if (isKaneka && /pay gap|unadjusted|adjusted/.test(t)) {
@@ -273,6 +307,8 @@ function resolveConflict(id: string, body: ConflictResolve): RawResponse {
   if (!["updated_record", "updated_new_info", "both_valid"].includes(body?.resolution)) return fail(422, "Invalid");
   if (body.resolution === "both_valid" && !body.note?.trim()) return fail(422, "Invalid");
   c.resolution = body.resolution;
+  if (body.resolution === "updated_record" && state.overrideFor[c.id]) state.overrides.add(state.overrideFor[c.id]);
+  if (body.resolution === "updated_record" && c.id === "cf-kan-discount") state.overrides.add("kaneka_discount");
   c.resolution_note = body.note?.trim() || null;
   c.resolved_by = state.user!.person;
   if (c.client_id) {
@@ -412,8 +448,10 @@ function person(id: string): RawResponse {
 
 // ------------------------------------------------------------------ router
 
+const path_delay = (p: string) => (p.startsWith("/check") ? 320 : 220);
+
 export async function mockFetch(method: string, rawPath: string, body?: unknown): Promise<RawResponse> {
-  await new Promise((r) => setTimeout(r, 250));
+  await new Promise((r) => setTimeout(r, path_delay(rawPath)));
   const url = new URL(rawPath, "http://mock.local");
   const path = url.pathname;
   const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
@@ -467,6 +505,12 @@ export async function mockFetch(method: string, rawPath: string, body?: unknown)
   }
   if (method === "GET" && parts[0] === "people" && parts[1]) return person(parts[1]);
   if (method === "POST" && path === "/ask") return ask(body as AskRequest);
+  if (method === "POST" && path === "/check") {
+    const b = body as CheckRequest;
+    if (!b?.text || !b.client_id) return fail(422, "Invalid");
+    if (!state.records[b.client_id]) return fail(404, "Not found");
+    return ok(previewCheck(b));
+  }
   if (method === "POST" && path === "/solutions") return buildSolution(body as SolutionRequest);
 
   return fail(404, "Not found");

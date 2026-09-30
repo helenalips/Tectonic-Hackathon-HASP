@@ -15,7 +15,7 @@
   h3,
   h4 {
     @apply font-display text-heading;
-    letter-spacing: 0;
+    letter-spacing: -0.01em;
   }
   :focus {
     outline: none;
@@ -36,11 +36,19 @@
 
 /* Composable component classes (Tailwind v4 @utility so they can be @applied). */
 @utility card {
-  @apply rounded-lg border border-borderSubtle bg-surface p-6 shadow-1;
+  @apply rounded-xl border border-borderSubtle bg-surface p-6 shadow-0;
+}
+
+@utility panel {
+  @apply rounded-xl border border-borderSubtle bg-surface shadow-soft;
 }
 
 @utility btn {
-  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded px-5 py-2 text-body-s font-semibold transition-colors disabled:opacity-60;
+  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 py-2 text-body-xs font-semibold transition-colors duration-fast disabled:opacity-60;
+}
+
+@utility btn-sm {
+  @apply inline-flex min-h-8 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-caption font-semibold transition-colors duration-fast disabled:opacity-60;
 }
 
 @utility btn-primary {
@@ -64,7 +72,18 @@
 }
 
 @utility field {
-  @apply w-full rounded border border-border bg-surface px-3 py-2 text-body-s text-textStrong placeholder:text-textMuted;
+  @apply w-full rounded-md border border-border bg-surface px-3 py-2 text-body-s text-textStrong placeholder:text-textMuted;
+}
+
+@utility kbd {
+  @apply inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-surface px-1 font-sans text-caption font-semibold text-textMuted;
+}
+
+@utility skeleton {
+  @apply rounded-md bg-borderSubtle;
+  background-image: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: tg-shimmer 1.2s linear infinite;
 }
 
 @utility link {
@@ -73,4 +92,44 @@
 
 @utility eyebrow {
   @apply text-body-xs font-semibold text-textMuted;
+}
+
+/* ---------------------------------------------------------------- v2 motion (150-250ms) */
+@keyframes tg-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+@keyframes tg-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tg-slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tg-pop {
+  from { opacity: 0; transform: translateY(-8px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tg-flash {
+  0% { background-color: rgba(0, 121, 0, .28); }
+  100% { background-color: rgba(0, 121, 0, 0); }
+}
+@keyframes tg-pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(233, 0, 64, .35); }
+  50% { box-shadow: 0 0 0 6px rgba(233, 0, 64, 0); }
+}
+.animate-fade-in { animation: tg-fade-in 200ms cubic-bezier(.2,.8,.2,1) both; }
+.animate-slide-in { animation: tg-slide-in-right 250ms cubic-bezier(.2,.8,.2,1) both; }
+.animate-pop { animation: tg-pop 180ms cubic-bezier(.2,.8,.2,1) both; }
+.animate-flash { animation: tg-flash 1.6s ease-out both; }
+.animate-pulse-dot { animation: tg-pulse-dot 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }

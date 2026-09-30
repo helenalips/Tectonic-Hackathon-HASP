@@ -20,6 +20,13 @@ EXPECTED_NAMES = {
     "cl-globalpaint": "Global Paint company",
     "cl-skhitech": "SK hi-tech battery materials Poland",
 }
+# v2: clearly fictional extra clients (source "generated")
+FICTIONAL_NAMES = {
+    "cl-nordvik": "Nordvik Logistics",
+    "cl-helio": "Helio Retail Group",
+    "cl-maas": "Maas & Partners Care",
+    "cl-alpenwerk": "Alpenwerk Tools",
+}
 
 
 @pytest.fixture(scope="module")
@@ -39,12 +46,12 @@ def _docs(seed_dir):
 
 def test_parse_mock_data_five_clients(seed_dir):
     clients = _load(seed_dir, "clients.json")
-    assert {c["id"]: c["name"] for c in clients} == EXPECTED_NAMES
+    assert {c["id"]: c["name"] for c in clients} == {**EXPECTED_NAMES, **FICTIONAL_NAMES}
     by_id = {c["id"]: c for c in clients}
     assert by_id["cl-globalpaint"]["country"] == "MULTI" and by_id["cl-globalpaint"]["segment"] == "global"
     assert by_id["cl-afriflora"]["country"] == "ET"
     for c in clients:
-        assert c["source"] == "mock"
+        assert c["source"] == ("mock" if c["id"] in EXPECTED_NAMES else "generated")
         assert c["summary"].startswith("Situation:") and "Outcome:" in c["summary"]
         assert "<" not in c["summary"] and "**" not in c["summary"]
 
@@ -94,7 +101,7 @@ def test_dossier_precedents(seed_dir):
     cityd = items["di-cityd-pay-gap-report"]
     assert cityd["status"] == "resolved" and cityd["created_by"] == "p-marc" and cityd["category"] == "feature_request"
     resolved_clients = {i["client_id"] for i in items.values() if i["status"] == "resolved"}
-    assert resolved_clients == set(EXPECTED_NAMES)
+    assert resolved_clients == set(EXPECTED_NAMES) | set(FICTIONAL_NAMES)
     assert items["di-kaneka-open-question"]["status"] == "open"
 
 

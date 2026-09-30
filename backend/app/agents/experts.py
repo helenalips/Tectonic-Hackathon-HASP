@@ -45,6 +45,9 @@ KEY_LABELS: dict[str, str] = {
     "sla_response_hours": "SLA response time",
     "pay_gap_method": "pay gap method",
     "contact_person": "contact person",
+    "declined_scope": "declined scope",
+    "payroll_cutoff_day": "payroll cut-off day",
+    "invoice_terms_days": "invoice payment terms",
 }
 
 _MAX_TOP_DOCS = 3
@@ -81,6 +84,12 @@ def format_value(session: Session, key: str, value: str, unit: str | None) -> st
         return ref.name if ref else value
     if key == "price_model":
         return human(value)
+    if key == "payroll_cutoff_day" and value.isdigit():
+        from app.agents.dedup import ordinal
+
+        return f"the {ordinal(int(value))} of the month"
+    if key == "declined_scope":
+        return f"{value} (declined by the client)"
     if unit == "%":
         return f"{value}%"
     if unit and unit not in KEY_LABELS.get(key, ""):  # "1 providers" reads badly after "number of payroll providers"

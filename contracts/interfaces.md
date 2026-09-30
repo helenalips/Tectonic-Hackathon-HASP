@@ -56,6 +56,16 @@ def record_decision(session, *, client_id, level, new_ref, match: DedupMatch, us
 def check_claim(session, claim: Claim, document: Document) -> list[Conflict]   # within_record, persisted
 def resolve_conflict(session, user: CurrentUser, conflict_id: str, body: ConflictResolve) -> Conflict
 
+def is_conflict(a, b) -> bool                              # v2: public; also accepts ExtractedClaim-like objects
+def proposal_conflicts(declined: Claim, module: str) -> bool  # v2: a proposed module vs an active declined_scope
+
+# app/agents/check.py  (v2 backend)
+def check_draft(session, user: CurrentUser, body: CheckRequest) -> CheckResult   # read-only
+def solvers_of(session, item: DossierItem) -> list[str]   # person ids: authors of solution docs, else the item expert
+
+# app/agents/capture.py  (v2 additions)
+def extract_proposals(text: str) -> list[tuple[str, str]] # [(declined_scope module, sentence)] a text PROPOSES
+
 # app/agents/vertical.py  (Agent 2)
 def find_precedents(session, user: CurrentUser, client_id: str, text: str, category: Category | None, k: int = 5) -> list[Precedent]
 def check_approach(session, client_id: str, document: Document, category: Category) -> list[Conflict]  # across_records

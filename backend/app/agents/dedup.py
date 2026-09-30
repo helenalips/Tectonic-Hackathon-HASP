@@ -204,7 +204,15 @@ KEY_LABELS = {
     "sla_response_hours": "SLA response time",
     "pay_gap_method": "pay gap method",
     "contact_person": "contact person",
+    "declined_scope": "declined scope",
+    "payroll_cutoff_day": "payroll cut-off day",
+    "invoice_terms_days": "invoice payment terms",
 }
+
+
+def ordinal(n: int) -> str:
+    suffix = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
 
 
 def describe_value(key: str, value: str, unit: str | None = None) -> str:
@@ -218,6 +226,12 @@ def describe_value(key: str, value: str, unit: str | None = None) -> str:
             return fmt_date(date.fromisoformat(value))
         except ValueError:
             return value
+    if key == "payroll_cutoff_day":
+        return f"the {ordinal(int(value))} of the month" if value.isdigit() else value
+    if key == "invoice_terms_days":
+        return f"{value} days"
+    if key == "declined_scope":
+        return f"no {value}"
     if unit and unit not in ("%",):
         return f"{value} {unit}"
     return value.replace("_", " ")

@@ -50,6 +50,23 @@ _TOPICS: dict[str, tuple[str, ...]] = {
     ),
     "hr_system": ("successfactors", "hr system", "hris", "employee self-service", "self service"),
     "onboarding": ("onboarding", "new joiner", "new hires"),
+    # Recurring payroll problems (v2 seed): same problem, different wording at different clients.
+    "overtime_premium": (
+        "overtime premium", "overtime supplement", "overtime surcharge", "sunday premium", "weekend premium",
+        "night premium", "sunday supplement",
+    ),
+    "no_smartphone_self_service": (
+        "without smartphones", "without a smartphone", "no smartphone", "lack smartphones", "without a company smartphone",
+        "kiosk", "shared tablet", "shared device",
+    ),
+    "retro_corrections": (
+        "retroactive", "retro-active", "retro calculation", "back pay", "indexation", "barema update",
+    ),
+    "payroll_cutoff": ("cut-off dispute", "mid-month cut-off", "late inputs", "late variable pay", "paid a month late"),
+    "leave_balance_migration": ("leave balance", "leave balances", "holiday balance", "carry-over leave"),
+    "time_registration": (
+        "works council", "betriebsrat", "time registration", "clocking", "time sheets", "badge terminal",
+    ),
 }
 
 _MANUAL = ("excel", "spreadsheet", "manual", "by hand")

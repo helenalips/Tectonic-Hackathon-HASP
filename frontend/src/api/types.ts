@@ -299,3 +299,111 @@ export interface AskRequest {
 export interface SolutionRequest {
   dossier_item_id: string;
 }
+
+// ------------------------------------------------------------------ v2: live draft check (POST /check)
+
+export type Channel = "email" | "chat" | "note" | "ticket";
+
+export interface SourceDoc {
+  document_id: string;
+  title: string;
+  type: DocType;
+  author: PersonRef;
+  date: string;
+  trust: TrustScore;
+  excerpt: string;
+  /** Set on vertical sources (data-minimised label of the other client). */
+  client_label?: string | null;
+}
+
+export type FindingKind = "conflict" | "confirmed" | "new_fact" | "duplicate_document";
+
+/** One statement in the draft, compared with THIS client's record (horizontal dimension). */
+export interface HorizontalFinding {
+  kind: FindingKind;
+  key: string | null;
+  key_label: string;
+  draft_value: string | null;
+  /** Exact substring of the draft text, so the UI can highlight it. */
+  draft_quote: string;
+  record_value: string | null;
+  record_claim: ClaimView | null;
+  sources: SourceDoc[];
+  severity: Severity | null;
+  explanation: string;
+  suggested_rewrite: string | null;
+}
+
+/** A similar problem at ANOTHER client (vertical dimension). Data-minimised. */
+export interface SimilarCase {
+  dossier_item_id: string;
+  client_label: string;
+  category: Category;
+  title: string;
+  resolution_summary: string;
+  approach: string | null;
+  date: string;
+  similarity: number;
+  status: "open" | "resolved";
+  solvers: PersonRef[];
+  sources: SourceDoc[];
+}
+
+export interface ApproachWarning {
+  explanation: string;
+  draft_approach: string;
+  proven_approach: string;
+  draft_quote: string | null;
+  suggested_rewrite: string | null;
+}
+
+export interface DimensionStatus {
+  status: "consistent" | "conflict" | "info" | "empty";
+  headline: string;
+}
+
+export interface CheckRequest {
+  client_id: string;
+  channel?: Channel;
+  subject?: string;
+  text: string;
+}
+
+export interface CheckResult {
+  client: ClientSummary;
+  detected_category: Category | null;
+  topic: string | null;
+  horizontal: DimensionStatus;
+  horizontal_findings: HorizontalFinding[];
+  vertical: DimensionStatus;
+  similar_cases: SimilarCase[];
+  approach_warning: ApproachWarning | null;
+  experts: Experts;
+  /** Everyone who solved this problem elsewhere (can be 3+ people). */
+  problem_experts: Expert[];
+  suspicious: boolean;
+  suspicious_reason: string | null;
+  mode: "llm" | "mock";
+}
+
+// ------------------------------------------------------------------ v2: richer person profile
+
+export interface SolvedCase {
+  dossier_item_id: string;
+  client_label: string;
+  category: Category;
+  title: string;
+  date: string;
+}
+
+export interface PersonProfileV2 extends PersonProfile {
+  title: string;
+  location: string;
+  languages: string[];
+  bio: string;
+  years_at_sdworx: number | null;
+  solved_cases: SolvedCase[];
+  documents: TopDocument[];
+  clients_count: number;
+  total_hours: number;
+}

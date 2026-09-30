@@ -32,8 +32,13 @@ KEY_GROUPS: list[frozenset[str]] = [
     frozenset({"discount_pct", "price_model"}),
     frozenset({"headcount", "headcount_target"}),
 ]
-_HIGH = {"discount_pct", "price_model"}
-_MEDIUM = {"headcount", "headcount_target", "go_live_date", "payroll_provider_count", "sla_response_hours"}
+_HIGH = {"discount_pct", "price_model", "invoice_terms_days", "declined_scope"}
+_MEDIUM = {
+    "headcount", "headcount_target", "go_live_date", "payroll_provider_count", "sla_response_hours",
+    "payroll_cutoff_day", "contact_person",
+}
+# Keys where several different values can be true at once (a client can decline several modules).
+_MULTI_VALUED = {"declined_scope"}
 
 _DOC_TYPE_WORDS = {
     "email": "an email",
@@ -65,9 +70,11 @@ def _as_float(value: str) -> float | None:
         return None
 
 
-def _is_conflict(a: Claim, b: Claim) -> bool:
-    """True when the two active claims cannot both be true."""
+def is_conflict(a: Claim, b: Claim) -> bool:
+    """True when the two active claims (or claim-like objects with key/value) cannot both be true."""
     if a.key == b.key:
+        if a.key in _MULTI_VALUED:
+            return False
         if a.value == b.value:
             return False
         fa, fb = _as_float(a.value), _as_float(b.value)
@@ -80,6 +87,18 @@ def _is_conflict(a: Claim, b: Claim) -> bool:
         return (price.value == "full_price" and pct > 0) or (price.value == "discounted" and pct == 0)
     # headcount vs headcount_target describe different things: never a conflict with each other.
     return False
+
+
+_is_conflict = is_conflict  # backwards-compatible private name
+
+
+def proposal_conflicts(declined: Claim, module: str) -> bool:
+    """A draft or document PROPOSING `module` conflicts with an active declined_scope claim for that module."""
+    return declined.key == "declined_scope" and declined.value == module
+
+
+def related_keys(key: str) -> set[str]:
+    return _related_keys(key)
 
 
 def severity_for(key: str) -> Severity:
@@ -154,7 +173,7 @@ def check_claim(session: Session, claim: Claim, document: Document) -> list[Conf
     ).all()
     conflicts: list[Conflict] = []
     for other in others:
-        if not _is_conflict(claim, other) or _pending_pair_exists(session, claim.id, other.id):
+        if not is_conflict(claim, other) or _pending_pair_exists(session, claim.id, other.id):
             continue
         other_doc = evidence_document(session, other)
         keys = {claim.key, other.key}

@@ -17,6 +17,7 @@ export const color = {
   secondarySubtle: "#FFF3FB",
 
   // Neutrals
+  ink: "#0B1220", // v3: big headlines (near-black)
   heading: "#001C52", // mysdworx look: headings and key numbers in navy
   text: "#323334", // body text (11.6:1 on #F4F5F6)
   textStrong: "#212223",
@@ -60,8 +61,10 @@ export const status = {
   },
   // The two TrustGrid dimensions get a stable accent so users learn them at a glance.
   dimension: {
-    withinRecord: { accent: "#006DD8", label: "This client record" },
-    acrossRecords: { accent: "#B72280", label: "Across clients" },
+    // v3 (team one-pager): horizontal = blue ↔, vertical = SD Worx plum ↕, the new item = red.
+    withinRecord: { accent: "#006DD8", soft: "#E6F1FC", subtle: "#F3F8FE", icon: "↔", label: "Horizontal · The client record" },
+    acrossRecords: { accent: "#870B58", soft: "#F6E6EF", subtle: "#FBF4F8", icon: "↕", label: "Vertical · Across all clients" },
+    newItem: { accent: "#E4003A", label: "New item" },
   },
 } as const;
 
@@ -69,7 +72,8 @@ export const font = {
   // SD Worx Display is proprietary and not licensed to us. Plus Jakarta Sans is the geometric
   // stand-in for headings (suggested in sdworx-styleguide.md); Inter stays the body/UI font.
   // Self-hosted via @fontsource-variable (no requests to Google: GDPR).
-  display: ['"Plus Jakarta Sans Variable"', '"Plus Jakarta Sans"', '"Inter Variable"', "system-ui", "sans-serif"],
+  // v3 (team one-pager): Inter everywhere; headlines Inter 800, tight tracking (-0.02em).
+  display: ['"Inter Variable"', '"Inter"', "system-ui", "sans-serif"],
   sans: ['"Inter Variable"', '"Inter"', "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
   mono: ["Consolas", "ui-monospace", "monospace"],
   letterSpacingBody: "-0.2px",
@@ -77,6 +81,8 @@ export const font = {
 
 /** [size, lineHeight] from the Ignite type scale (1rem = 16px). */
 export const fontSize = {
+  "display-xl": ["3.25rem", "3.5rem"], // v3 one-pager headline (Inter 800, -0.02em)
+  "display-l": ["2.5rem", "2.75rem"],
   "heading-xl": ["2.5rem", "2.75rem"],
   "heading-l": ["2rem", "2.25rem"],
   "heading-m": ["1.75rem", "1.875rem"],
@@ -90,7 +96,7 @@ export const fontSize = {
   caption: ["0.75rem", "1rem"],
 } as const;
 
-export const fontWeight = { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 } as const;
+export const fontWeight = { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800 } as const;
 
 /** 8px-based scale with the Ignite in-between steps. Keys are px. */
 export const spacing = {
@@ -99,20 +105,48 @@ export const spacing = {
 } as const;
 
 // mysdworx 2026 look: softer cards, pill chips/tags. Buttons and inputs keep 4px.
-export const radius = { sm: "2px", DEFAULT: "4px", md: "8px", lg: "12px", full: "9999px" } as const;
+// v2 (modern SaaS pass): panels and overlays get 16/20px corners; buttons/inputs move to 8px.
+export const radius = { sm: "2px", DEFAULT: "4px", md: "8px", lg: "12px", xl: "16px", "2xl": "20px", full: "9999px" } as const;
 
 export const shadow = {
+  0: "0 1px 2px rgba(4,41,65,.06)", // v2: hairline cards
   1: "0 0 3px rgba(4,41,65,.08), 0 2px 6px -1px rgba(4,41,65,.20)", // resting cards
   2: "0 1px 8px rgba(4,41,65,.11), 0 5px 8px rgba(4,41,65,.10)",
   3: "0 1px 8px rgba(4,41,65,.12), 0 6px 12px rgba(4,41,65,.17)",
   4: "0 8px 24px rgba(4,41,65,.20), 0 3px 8px rgba(4,41,65,.12)", // modals, popovers
+  soft: "0 1px 2px rgba(4,41,65,.05), 0 8px 24px -8px rgba(4,41,65,.12)", // v2 panels
+  pop: "0 24px 64px -12px rgba(0,28,82,.35), 0 4px 12px rgba(0,28,82,.10)", // v2 palette / drawers
 } as const;
 
 export const focusRing = "0 0 0 2px #001C52";
 
 export const gradient = {
+  signature: "linear-gradient(90deg, #006DD8 0%, #870B58 55%, #E4003A 100%)", // 3px rule under page titles
   brand: "linear-gradient(135deg, #9ED2FF 0%, #006DD8 100%)", // hero accents only
+  // v2: subtle washes that carry the two grid dimensions (never behind text smaller than 14px bold)
+  horizontal: "linear-gradient(90deg, rgba(0,109,216,.10) 0%, rgba(0,109,216,0) 100%)",
+  vertical: "linear-gradient(180deg, rgba(135,11,88,.10) 0%, rgba(135,11,88,0) 100%)",
+  canvas: "radial-gradient(1200px 600px at 100% -10%, rgba(0,109,216,.05), transparent 60%), radial-gradient(900px 500px at -10% 110%, rgba(135,11,88,.04), transparent 60%)",
 } as const;
+
+/**
+ * Grid language (v3, team one-pager). Horizontal = the client record (blue, ↔).
+ * Vertical = across all clients (SD Worx plum, ↕). The new item (your draft or question) = red.
+ * Used by GridMap, lane headers, status pills and every result view.
+ */
+export const grid = {
+  horizontal: { color: "#006DD8", soft: "#E6F1FC", subtle: "#F3F8FE", arrow: "↔", label: "Horizontal · checked against the record", short: "Horizontal" },
+  vertical: { color: "#870B58", soft: "#F6E6EF", subtle: "#FBF4F8", arrow: "↕", label: "Vertical · checked against all clients", short: "Vertical" },
+  newItem: "#E4003A",
+  rowLine: "#C9CDD2", // other clients' rows (decorative, never text)
+  dot: { conflict: "#E4003A", confirm: "#007900", neutral: "#88898B" },
+} as const;
+
+/** Motion: short fades and slides; disabled under prefers-reduced-motion (index.css). */
+export const motion = { fast: "150ms", base: "200ms", slow: "250ms", ease: "cubic-bezier(.2,.8,.2,1)" } as const;
+
+/** Glass surfaces for the top bar and overlays. */
+export const surface = { glass: "rgba(255,255,255,.82)", scrim: "rgba(0,28,82,.32)" } as const;
 
 /** Logo files are copied from branding/logo/ to frontend/public/brand/ (never recolored or redrawn). */
 export const logo = {
@@ -124,6 +158,8 @@ export const logo = {
 
 export const layout = {
   maxContentWidth: "1280px",
+  railWidth: "76px",
+  topbarHeight: "56px",
   headerHeight: "64px",
   gutter: "24px",
   sectionPaddingY: "64px",

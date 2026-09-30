@@ -7,7 +7,10 @@ Run from backend/:  python -m scripts.parse_mock_data
 - People, users, assignments, documents, dossier items and contributions are fictional and
   marked source "generated". Real client names stay unchanged (team decision, schema.md §7).
 - users.json never contains passwords: scripts.seed hashes settings.demo_password.
-- demo_inputs.json holds the texts the presenter pastes live for scenarios a, b, c, d, f, g.
+- demo_inputs.json holds the texts the presenter pastes live for scenarios a, b, c, d, f, g, plus a
+  "compose" section of ready-made email/Slack drafts for the live draft check (POST /check).
+- v2: extra fictional clients, people, documents and recurring problems live in scripts/mock_data_v2.py;
+  profiles.json holds profile fields per person (title, location, languages, bio, years at SD Worx).
 """
 from __future__ import annotations
 
@@ -17,6 +20,7 @@ from pathlib import Path
 
 from app.config import get_settings
 from app.security.sanitize import to_plain_text
+from scripts import mock_data_v2 as v2
 
 # schema.md §7: exact names and metadata
 CLIENT_META = {
@@ -98,6 +102,7 @@ PEOPLE = [
      "email": "marc@example.com", "domains": ["compliance", "pay_transparency"], "countries": ["BE", "FR"]},
     {"id": "p-noor", "name": "Noor El Amrani", "role": "Change consultant", "team": "BE Consulting",
      "email": "noor@example.com", "domains": ["change_management", "pay_transparency"], "countries": ["BE", "NL"]},
+    *v2.EXTRA_PEOPLE,
     {"id": "p-admin", "name": "TrustGrid Admin", "role": "Platform administrator", "team": "Internal IT",
      "email": "admin@example.com", "domains": [], "countries": []},
 ]
@@ -268,6 +273,7 @@ DOCUMENTS = [
          "Service contract for SD Worx InnovaHR at the lithium-ion battery separator plant. Contracted headcount: "
          "500 employees, with a growth target of 2,000 employees. Payroll in Poland, processed monthly, including "
          "Polish declarations. Support response time: 8 hours."),
+    *v2.EXTRA_DOCUMENTS,
 ]
 
 DOSSIER_ITEMS = [
@@ -360,6 +366,7 @@ DOSSIER_ITEMS = [
      "resolution": "Bulk distribution of payslips and tax documents plus manager and employee self-service; manual effort practically eliminated.",
      "created_by": "p-tomasz", "created_at": "2024-09-10T13:00:00Z",
      "linked_document_ids": ["doc-sk-selfservice"]},
+    *v2.EXTRA_DOSSIER_ITEMS,
 ]
 
 CONTRIBUTIONS = [
@@ -376,6 +383,7 @@ CONTRIBUTIONS = [
     {"person_id": "p-abebe", "client_id": "cl-afriflora", "hours": 348.0, "first_date": "2024-03-01", "last_date": "2025-09-30"},
     {"person_id": "p-lotte", "client_id": "cl-globalpaint", "hours": 152.0, "first_date": "2024-07-09", "last_date": "2025-04-30"},
     {"person_id": "p-elena", "client_id": "cl-globalpaint", "hours": 61.0, "first_date": "2025-05-05", "last_date": "2026-08-28"},
+    *v2.EXTRA_CONTRIBUTIONS,
 ]
 
 _FWD_HEADER = (
@@ -443,6 +451,8 @@ DEMO_INPUTS = {
          "text": KANEKA_OPEN_QUESTION,
          "expected": "Linked to di-kaneka-open-question again; still one open item."},
     ],
+    "_compose_note": "Drafts for the live draft check (POST /check with client_id, channel, subject, text). Nothing is stored.",
+    "compose": v2.COMPOSE_INPUTS,
 }
 
 
@@ -452,7 +462,7 @@ def _write(path: Path, data) -> None:
 
 def write_all(out: Path, mock_markdown: str) -> dict[str, object]:
     """Write every seed JSON file into `out`. Returns the written data by file name."""
-    clients = parse_mock_cases(mock_markdown)
+    clients = parse_mock_cases(mock_markdown) + v2.EXTRA_CLIENTS
     out.mkdir(parents=True, exist_ok=True)
     files = {
         "clients.json": clients,
@@ -463,6 +473,7 @@ def write_all(out: Path, mock_markdown: str) -> dict[str, object]:
         "dossier_items.json": [{**d, "source": "generated"} for d in DOSSIER_ITEMS],
         "contributions.json": CONTRIBUTIONS,
         "demo_inputs.json": DEMO_INPUTS,
+        "profiles.json": v2.PROFILES,
     }
     for name, data in files.items():
         _write(out / name, data)
@@ -473,8 +484,8 @@ def main() -> None:
     s = get_settings()
     out = Path(s.seed_dir)
     files = write_all(out, Path(s.mock_data_path).read_text(encoding="utf-8"))
-    print(f"Wrote {len(files)} files to {out}: {len(files['clients.json'])} clients, {len(DOCUMENTS)} documents, "
-          f"{len(DOSSIER_ITEMS)} dossier items.")
+    print(f"Wrote {len(files)} files to {out}: {len(files['clients.json'])} clients, {len(PEOPLE)} people, "
+          f"{len(DOCUMENTS)} documents, {len(DOSSIER_ITEMS)} dossier items.")
 
 
 if __name__ == "__main__":
