@@ -367,7 +367,6 @@ export function ChatPage() {
             <h1 className="mt-2 max-w-4xl font-display text-display-l font-extrabold tracking-tightest text-ink xl:text-display-xl">
               One source of truth per client, checked against every client.
             </h1>
-            <p className="mt-3 text-body-s text-textMuted">From “I found something” to “I understand why I can rely on it.”</p>
             <SignatureRule className="mt-5 max-w-md" />
           </div>
         ) : (
