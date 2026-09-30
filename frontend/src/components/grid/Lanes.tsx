@@ -39,12 +39,12 @@ export function DimensionPill({ dim, status, loading = false, onClick }: { dim: 
   return (
     <Tag
       {...(onClick ? { type: "button" as const, onClick } : {})}
-      className={`inline-flex min-w-0 max-w-full items-center gap-2 rounded-full border bg-surface py-1 pl-1 pr-3 text-left text-caption font-semibold text-textStrong ${d.border} ${onClick ? "transition-colors hover:bg-backgroundAlt" : ""}`}
+      className={`inline-flex min-w-0 max-w-full items-center gap-2 rounded-full py-0.5 pr-2 text-left text-caption font-medium text-textMuted ${onClick ? "transition-colors hover:text-heading" : ""}`}
     >
       <span aria-hidden="true" className={`inline-flex h-6 shrink-0 items-center rounded-full px-2 font-bold ${d.soft} ${d.text}`}>
         {d.arrow} {d.eyebrow}
       </span>
-      <Icon aria-hidden="true" className={`size-4 shrink-0 ${iconTone}`} />
+      <Icon aria-hidden="true" className={`size-3.5 shrink-0 ${iconTone}`} />
       <span className="truncate">{loading && !status ? "Checking…" : (status?.headline ?? "Waiting for text")}</span>
     </Tag>
   );

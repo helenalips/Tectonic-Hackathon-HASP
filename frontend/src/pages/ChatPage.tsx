@@ -74,7 +74,6 @@ function withResolvedStatus(t: Turn): CheckResult | null {
 }
 
 function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number, patch: Partial<Turn> | ((t: Turn) => Partial<Turn>)) => void; onAskSlack: (e: Expert) => void }) {
-  const { clients } = useClients();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -122,7 +121,7 @@ function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number,
           <p className="mb-1 text-[11px] font-bold uppercase tracking-eyebrow text-hz">
             {t.isDraft ? "Email draft" : "Question"} · {t.clientName}
           </p>
-          <p className="line-clamp-6 whitespace-pre-wrap">{t.asked}</p>
+          <p className={`whitespace-pre-wrap ${t.isDraft ? "line-clamp-2" : "line-clamp-6"}`}>{t.asked}</p>
         </div>
       </div>
 
@@ -211,7 +210,6 @@ function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number,
                 result={check}
                 timeline={t.timeline}
                 newItemLabel={t.isDraft ? "Your email" : "Your question"}
-                otherClients={clients.map((c) => c.name)}
                 noun={noun}
                 applied={t.applied}
                 recordUpdated={t.recordUpdated}
