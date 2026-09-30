@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import ask, auth, clients, conflicts, dossiers, events, people, search, solutions
+from app.api import ask, auth, check, clients, conflicts, dossiers, events, people, search, solutions
 from app.db import init_db
 from app.security import web
 from app.security.logging import configure_logging
@@ -33,5 +33,5 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-for module in (auth, clients, events, dossiers, search, people, conflicts, ask, solutions):
+for module in (auth, clients, events, dossiers, search, people, conflicts, ask, solutions, check):
     app.include_router(module.router)

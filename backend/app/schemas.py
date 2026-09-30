@@ -286,3 +286,108 @@ class AskRequest(Strict):
 
 class SolutionRequest(Strict):
     dossier_item_id: str = Field(max_length=40)
+
+
+# ---------------------------------------------------------------- live draft check (v2: "assistant in every channel")
+
+
+class SourceDoc(BaseModel):
+    document_id: str
+    title: str
+    type: DocType
+    author: PersonRef
+    date: datetime
+    trust: TrustScore
+    excerpt: str = Field(max_length=400)
+    client_label: str | None = None  # set on vertical sources (data-minimized)
+
+
+class HorizontalFinding(BaseModel):
+    """One statement in the draft, compared with THIS client's record (horizontal dimension)."""
+
+    kind: Literal["conflict", "confirmed", "new_fact", "duplicate_document"]
+    key: str | None
+    key_label: str
+    draft_value: str | None
+    draft_quote: str  # exact substring of the draft text, so the UI can highlight it
+    record_value: str | None
+    record_claim: ClaimView | None
+    sources: list[SourceDoc]
+    severity: Severity | None
+    explanation: str
+    suggested_rewrite: str | None  # replacement for draft_quote that is consistent with the record
+
+
+class SimilarCase(BaseModel):
+    """A similar problem at ANOTHER client (vertical dimension). Data-minimized."""
+
+    dossier_item_id: str
+    client_label: str
+    category: Category
+    title: str
+    resolution_summary: str
+    approach: str | None
+    date: date
+    similarity: float
+    status: Literal["open", "resolved"]
+    solvers: list[PersonRef]
+    sources: list[SourceDoc]
+
+
+class ApproachWarning(BaseModel):
+    explanation: str
+    draft_approach: str
+    proven_approach: str
+    draft_quote: str | None
+    suggested_rewrite: str | None
+
+
+class DimensionStatus(BaseModel):
+    status: Literal["consistent", "conflict", "info", "empty"]
+    headline: str  # e.g. "1 inconsistency with earlier promises to this client"
+
+
+class CheckRequest(Strict):
+    client_id: str = ClientIdStr
+    channel: Literal["email", "chat", "note", "ticket"] = "email"
+    subject: str | None = Field(default=None, max_length=200)
+    text: str = Field(min_length=1, max_length=20000)
+
+
+class CheckResult(BaseModel):
+    client: ClientSummary
+    detected_category: Category | None
+    topic: str | None
+    horizontal: DimensionStatus
+    horizontal_findings: list[HorizontalFinding]
+    vertical: DimensionStatus
+    similar_cases: list[SimilarCase]
+    approach_warning: ApproachWarning | None
+    experts: Experts
+    problem_experts: list[Expert]  # everyone who solved this problem elsewhere (can be 3+ people)
+    suspicious: bool
+    suspicious_reason: str | None
+    mode: Literal["llm", "mock"]
+
+
+# ---------------------------------------------------------------- richer person profile (v2)
+
+
+class SolvedCase(BaseModel):
+    dossier_item_id: str
+    client_label: str
+    category: Category
+    title: str
+    date: date
+
+
+class PersonProfileV2(PersonProfile):
+    title: str = ""
+    location: str = ""
+    languages: list[str] = Field(default_factory=list)
+    bio: str = ""
+    years_at_sdworx: int | None = None
+    solved_cases: list[SolvedCase] = Field(default_factory=list)
+    documents: list[TopDocument] = Field(default_factory=list)
+    clients_count: int = 0
+    total_hours: float = 0

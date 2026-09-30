@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     rate_ask: str = "20/minute"
     rate_solutions: str = "10/minute"
     rate_events: str = "30/minute"
+    rate_check: str = "60/minute"  # live check runs debounced while typing
 
     # Dedup thresholds (contracts/schema.md §5)
     dedup_document_similarity: float = 0.95
