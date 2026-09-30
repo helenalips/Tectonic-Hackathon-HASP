@@ -6,6 +6,20 @@ duplicates as they arrive, shows why each fact can be trusted, and names the col
 
 Built for the SD Worx hackathon challenge *"Find it. Understand it. Trust it."*
 
+## Login (local demo)
+
+Open **http://127.0.0.1:5173** after `make dev`.
+
+| Email | Password | Who |
+|---|---|---|
+| `sofie@example.com` | `TrustGrid-Demo-2026` | Consultant, Kaneka Belgium + CityD-WES group (start here) |
+| `tomasz@example.com` | `TrustGrid-Demo-2026` | Consultant, SK hi-tech battery materials Poland |
+| `lotte@example.com` | `TrustGrid-Demo-2026` | Team lead, all clients |
+| `admin@example.com` | `TrustGrid-Demo-2026` | Admin, all clients |
+
+These are fictional, local-only accounts. The password is set by `DEMO_PASSWORD` in `.env`
+(copied from `.env.example`); change it there and run `make seed` for anything beyond a local demo.
+
 > **Demo data.** The five client names come from the challenge brief. Every internal fact (prices,
 > discounts, headcounts, emails, people) is fictional and tagged "Demo data" in the app.
 
@@ -52,7 +66,7 @@ Open http://localhost:5173. The first run downloads the embedding model (about 9
 
 ### Demo users
 
-All demo users share the password from `DEMO_PASSWORD` in your `.env`.
+All demo users share the password `TrustGrid-Demo-2026` (`DEMO_PASSWORD` in `.env`, see [Login](#login-local-demo)).
 
 | Email | Role | Can edit |
 |---|---|---|
