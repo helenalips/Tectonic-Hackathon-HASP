@@ -22,6 +22,8 @@ interface Props extends CheckActions {
   result: CheckResult;
   timeline?: TimelineItem[];
   newItemLabel?: string;
+  /** Other client names drawn as grid rows (full-width views). */
+  otherClients?: string[];
   /** "wide" = lanes side by side (chat); "narrow" = stacked (channel side panel). */
   layout?: "wide" | "narrow";
   showGrid?: boolean;
@@ -29,13 +31,13 @@ interface Props extends CheckActions {
 }
 
 /** The grid + horizontal lane + vertical lane + experts for one check result. */
-export function CheckResultView({ result, timeline = [], newItemLabel, layout = "wide", showGrid = true, idPrefix, noun = "email", applied, recordUpdated, busyKey, approachApplied, onApply, onUpdateRecord, onApplyApproach, onAskSlack }: Props) {
+export function CheckResultView({ result, timeline = [], newItemLabel, otherClients, layout = "wide", showGrid = true, idPrefix, noun = "email", applied, recordUpdated, busyKey, approachApplied, onApply, onUpdateRecord, onApplyApproach, onAskSlack }: Props) {
   const narrow = layout === "narrow";
   const conflicts = result.horizontal_findings.filter((f) => f.kind === "conflict");
   const context = `${result.client.name}${result.topic ? `: ${result.topic}` : ""}`;
   return (
     <div className="space-y-4">
-      {showGrid && <GridMap clientName={result.client.name} docs={docsFromCheck(result, timeline)} cases={result.similar_cases} newItemLabel={newItemLabel} compact={narrow} />}
+      {showGrid && <GridMap clientName={result.client.name} docs={docsFromCheck(result, timeline)} cases={result.similar_cases} newItemLabel={newItemLabel} compact={narrow} otherClients={otherClients} />}
       <div className={narrow ? "space-y-3" : "grid gap-4 lg:grid-cols-2"}>
         <Lane dim="horizontal" status={result.horizontal} id={`${idPrefix}-hz`} title={`${result.client.name}'s record`}>
           {conflicts.map((f) => (

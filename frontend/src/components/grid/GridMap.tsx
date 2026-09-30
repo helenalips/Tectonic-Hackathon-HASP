@@ -12,6 +12,8 @@ interface GridMapProps {
   newItemLabel?: string;
   compact?: boolean;
   className?: string;
+  /** Names of the other clients to draw as rows (full grid). Defaults to a few anonymous rows. */
+  otherClients?: string[];
 }
 
 /** Column position of the new item on the shared track, in percent. */
@@ -56,7 +58,7 @@ type Selection = { kind: "doc"; doc: GridDoc } | { kind: "case"; c: SimilarCase 
  * blue band (horizontal ↔: its documents over time) ending in the red NEW ITEM. A plum column (vertical ↕)
  * runs through the new item and crosses every other client; plum dots = same problem, already solved.
  */
-export function GridMap({ clientName, docs, cases, newItemLabel = "New item", compact = false, className = "" }: GridMapProps) {
+export function GridMap({ clientName, docs, cases, newItemLabel = "New item", compact = false, className = "", otherClients }: GridMapProps) {
   const [sel, setSel] = useState<Selection>(null);
   const titleId = useId();
   const detailId = useId();
@@ -65,15 +67,17 @@ export function GridMap({ clientName, docs, cases, newItemLabel = "New item", co
   const labelW = compact ? 92 : 172;
   const caseRows = cases.slice(0, compact ? 4 : 5);
   const usedLabels = new Set(caseRows.map((c) => c.client_label));
-  const fillers = FILLERS.filter((f) => !usedLabels.has(f)).slice(0, compact ? 1 : 2);
+  const fillerPool = otherClients && !compact ? otherClients.filter((n) => n !== clientName) : FILLERS;
+  const fillers = fillerPool.filter((f) => !usedLabels.has(f)).slice(0, compact ? 1 : otherClients ? 10 : 2);
+  const half = Math.ceil(fillers.length / 2);
   type Row = { key: string; label: string; c?: SimilarCase };
   const above: Row[] = [
-    ...(fillers[0] ? [{ key: "f0", label: fillers[0] }] : []),
+    ...fillers.slice(0, half).map((f, i) => ({ key: `f${i}`, label: f })),
     ...caseRows.slice(0, 1).map((c) => ({ key: c.dossier_item_id, label: c.client_label, c })),
   ];
   const below: Row[] = [
     ...caseRows.slice(1).map((c) => ({ key: c.dossier_item_id, label: c.client_label, c })),
-    ...(fillers[1] ? [{ key: "f1", label: fillers[1] }] : []),
+    ...fillers.slice(half).map((f, i) => ({ key: `g${i}`, label: f })),
   ];
 
   const rowH = compact ? 26 : 34;

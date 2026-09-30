@@ -13,7 +13,18 @@ from app.security.logging import configure_logging
 async def lifespan(_: FastAPI):
     configure_logging()
     init_db()
+    # Load the embedding model before serving, so the first live check is fast (a few seconds at startup).
+    _warm_embeddings()
     yield
+
+
+def _warm_embeddings() -> None:
+    try:
+        from app import embeddings
+
+        embeddings.embed(["warm-up"])
+    except Exception:  # warm-up is best effort; the first real call loads the model anyway  # nosec B110
+        pass
 
 
 app = FastAPI(

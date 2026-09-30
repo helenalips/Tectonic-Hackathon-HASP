@@ -8,7 +8,7 @@ import { SignatureRule } from "../components/grid/TrustGridMark";
 import { useClients } from "../lib/clients";
 
 const DEFAULT_TOPIC: Record<string, string> = {
-  "cl-kaneka": "Invoice the pay equity audit follow-up at full price.",
+  "cl-kaneka": "We will calculate the pay gap report manually in Excel. The report is invoiced at full price.",
   "cl-skhitech": "Propose the digital clocking app for all shifts in Q4.",
   "cl-afriflora": "Overtime premium of 150% on rest days.",
   "cl-cityd": "Adjusted and unadjusted pay gap report per job level.",
@@ -73,7 +73,7 @@ export function GridPage() {
         <div className="mt-5" aria-live="polite">
           {state.result ? (
             <div className={state.loading ? "opacity-70 transition-opacity" : ""}>
-              <CheckResultView idPrefix="gridpage" result={state.result} timeline={timeline} newItemLabel="New item" onAskSlack={(e) => navigate(`/slack?dm=${encodeURIComponent(e.person.id)}`)} />
+              <CheckResultView idPrefix="gridpage" result={state.result} timeline={timeline} newItemLabel="New item" otherClients={clients.map((c) => c.name)} onAskSlack={(e) => navigate(`/slack?dm=${encodeURIComponent(e.person.id)}`)} />
             </div>
           ) : (
             <div className="skeleton h-72 rounded-2xl" role="status" aria-label="Loading the grid" />

@@ -74,6 +74,7 @@ function withResolvedStatus(t: Turn): CheckResult | null {
 }
 
 function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number, patch: Partial<Turn> | ((t: Turn) => Partial<Turn>)) => void; onAskSlack: (e: Expert) => void }) {
+  const { clients } = useClients();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -210,6 +211,7 @@ function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number,
                 result={check}
                 timeline={t.timeline}
                 newItemLabel={t.isDraft ? "Your email" : "Your question"}
+                otherClients={clients.map((c) => c.name)}
                 noun={noun}
                 applied={t.applied}
                 recordUpdated={t.recordUpdated}
@@ -228,13 +230,18 @@ function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number,
   );
 }
 
+// Ready in the composer on first open: one email that lights up both grid dimensions at once
+// (↔ contradicts Jan's 10% discount promise, ↕ other clients solved the pay gap report with one integrated system).
+const STARTER_DRAFT =
+  "Dear Kaneka HR team,\n\nFor the pay gap report we will calculate the adjusted and unadjusted pay gap manually in Excel, combining a payroll export with the job matrix. The report is invoiced at full price.\n\nKind regards,\nSofie Maes";
+
 export function ChatPage() {
   const { clients } = useClients();
   const { me } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [clientId, setClientId] = useState<string>("");
-  const [text, setText] = useState("");
+  const [text, setText] = useState(STARTER_DRAFT);
   const [turns, setTurns] = useState<Turn[]>([]);
   const seq = useRef(1);
   const inputRef = useRef<HTMLTextAreaElement>(null);

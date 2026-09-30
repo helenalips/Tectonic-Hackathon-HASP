@@ -77,7 +77,7 @@ def _get_model():
             if _model is None:
                 from sentence_transformers import SentenceTransformer  # heavy import, only when needed
 
-                _model = SentenceTransformer(get_settings().embedding_model)
+                _model = SentenceTransformer(get_settings().embedding_model, device="cpu")  # MPS deadlocks across threads
     return _model
 
 
