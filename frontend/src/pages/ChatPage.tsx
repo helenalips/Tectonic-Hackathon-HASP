@@ -118,8 +118,8 @@ function TurnView({ t, onUpdate, onAskSlack }: { t: Turn; onUpdate: (id: number,
     <li className="space-y-4">
       {/* user turn */}
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-3xl rounded-br-lg bg-ink px-5 py-3 text-body-xs text-surface shadow-soft">
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-eyebrow text-surface/70">
+        <div className="max-w-[85%] rounded-3xl rounded-br-lg border border-hz/25 bg-hz-soft px-5 py-3 text-body-xs text-heading shadow-soft">
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-eyebrow text-hz">
             {t.isDraft ? "Email draft" : "Question"} · {t.clientName}
           </p>
           <p className="line-clamp-6 whitespace-pre-wrap">{t.asked}</p>
