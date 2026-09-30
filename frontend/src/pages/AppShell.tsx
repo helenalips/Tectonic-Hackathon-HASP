@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, FlaskConical, Grid3x3, Hash, LogOut, Mail, Search, Sparkles, Users, type LucideIcon } from "lucide-react";
+import { ChevronDown, FlaskConical, Grid3x3, Hash, LogOut, Mail, Search, Sparkles, Users, type LucideIcon } from "lucide-react";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Link, NavLink, Outlet, useMatch } from "react-router-dom";
 import { CommandPalette } from "../components/CommandPalette";
@@ -14,7 +14,6 @@ const NAV: { to: string; label: string; icon: LucideIcon; end?: boolean }[] = [
   { to: "/", label: "Ask", icon: Sparkles, end: true },
   { to: "/inbox", label: "Outlook", icon: Mail },
   { to: "/slack", label: "Slack", icon: Hash },
-  { to: "/clients", label: "Clients", icon: Building2 },
   { to: "/grid", label: "Grid", icon: Grid3x3 },
   { to: "/people", label: "People", icon: Users },
 ];

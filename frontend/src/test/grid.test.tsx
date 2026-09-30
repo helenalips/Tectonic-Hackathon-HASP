@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -61,6 +61,9 @@ describe("GridMap", () => {
     expect(within(hz).getByText(/Horizontal · checked against the record/)).toBeInTheDocument();
     expect(within(hz).getByRole("button", { name: /Update my email/ })).toBeInTheDocument();
     expect(within(vt).getByText(/Vertical · checked against all clients/)).toBeInTheDocument();
+    // Calm by default: the rest of the similar cases sit behind "… N more"
+    const more = within(vt).getByRole("button", { name: /more similar case/ });
+    fireEvent.click(more);
     expect(within(vt).getAllByRole("article").length).toBeGreaterThanOrEqual(3);
   });
 });
