@@ -1,6 +1,7 @@
-import { Building2, ChevronDown, FlaskConical, LogOut, Mail, Search, Sparkles, Users, type LucideIcon } from "lucide-react";
+import { Building2, ChevronDown, FlaskConical, Grid3x3, Hash, LogOut, Mail, Search, Sparkles, Users, type LucideIcon } from "lucide-react";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useMatch } from "react-router-dom";
+import { CommandPalette } from "../components/CommandPalette";
 import { api, onPreviewChange, USE_MOCKS } from "../api/client";
 import { TrustGridLogo } from "../components/grid/TrustGridMark";
 import { Avatar } from "../components/profile/Avatar";
@@ -12,7 +13,9 @@ import { useAsync } from "../lib/useAsync";
 const NAV: { to: string; label: string; icon: LucideIcon; end?: boolean }[] = [
   { to: "/", label: "Ask", icon: Sparkles, end: true },
   { to: "/inbox", label: "Outlook", icon: Mail },
+  { to: "/slack", label: "Slack", icon: Hash },
   { to: "/clients", label: "Clients", icon: Building2 },
+  { to: "/grid", label: "Grid", icon: Grid3x3 },
   { to: "/people", label: "People", icon: Users },
 ];
 
@@ -48,54 +51,50 @@ function Rail() {
 }
 
 function AskBox() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const match = useMatch("/clients/:clientId/*");
   const [q, setQ] = useState("");
-  const ref = useRef<HTMLInputElement>(null);
+  const [palette, setPalette] = useState<{ q: string } | null>(null);
   const id = useId();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (location.pathname === "/") window.dispatchEvent(new CustomEvent(ASK_EVENT, { detail: {} }));
-        else ref.current?.focus();
+        setPalette((p) => (p ? null : { q: "" }));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [location.pathname]);
+  }, []);
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    const question = q.trim();
-    if (!question) return;
+    setPalette({ q: q.trim() });
     setQ("");
-    ref.current?.blur();
-    if (location.pathname === "/") window.dispatchEvent(new CustomEvent(ASK_EVENT, { detail: { q: question } }));
-    else navigate("/", { state: { q: question } });
   }
 
   return (
-    <form role="search" onSubmit={submit} className="relative w-full max-w-xl">
-      <label htmlFor={id} className="sr-only">
-        Ask TrustGrid
-      </label>
-      <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-iconMuted" />
-      <input
-        ref={ref}
-        id={id}
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Ask TrustGrid about any client…"
-        autoComplete="off"
-        className="h-10 w-full rounded-xl border border-borderSubtle bg-background pl-9 pr-16 text-body-xs text-textStrong placeholder:text-textMuted transition-colors focus:border-hz focus:bg-surface"
-      />
-      <span className="pointer-events-none absolute right-2.5 top-1/2 flex -translate-y-1/2 gap-1" aria-hidden="true">
-        <kbd className="kbd">⌘</kbd>
-        <kbd className="kbd">K</kbd>
-      </span>
-    </form>
+    <>
+      <form role="search" onSubmit={submit} className="relative w-full max-w-xl">
+        <label htmlFor={id} className="sr-only">
+          Ask TrustGrid
+        </label>
+        <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-iconMuted" />
+        <input
+          id={id}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Ask TrustGrid about any client…"
+          autoComplete="off"
+          className="h-10 w-full rounded-xl border border-borderSubtle bg-background pl-9 pr-16 text-body-xs text-textStrong placeholder:text-textMuted transition-colors focus:border-hz focus:bg-surface"
+        />
+        <span className="pointer-events-none absolute right-2.5 top-1/2 flex -translate-y-1/2 gap-1" aria-hidden="true">
+          <kbd className="kbd">⌘</kbd>
+          <kbd className="kbd">K</kbd>
+        </span>
+      </form>
+      {palette && <CommandPalette onClose={() => setPalette(null)} initialQuery={palette.q} initialClientId={match?.params.clientId} />}
+    </>
   );
 }
 

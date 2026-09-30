@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlmodel import Session, select
 
 from app.config import get_settings
@@ -21,8 +21,21 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 class LoginRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    email: EmailStr = Field(max_length=254)
+    # Lenient on purpose: autofill adds spaces or capitals, and a bare "sofie" means sofie@example.com.
+    # Any unknown value simply fails the password check with the generic 401.
+    email: str = Field(min_length=1, max_length=254)
     password: str = Field(min_length=1, max_length=128)
+
+    @field_validator("email")
+    @classmethod
+    def _normalize_email(cls, v: str) -> str:
+        v = v.strip().lower()
+        return v if "@" in v else f"{v}@example.com"
+
+    @field_validator("password")
+    @classmethod
+    def _strip_password(cls, v: str) -> str:
+        return v.strip()
 
 
 class PersonRef(BaseModel):

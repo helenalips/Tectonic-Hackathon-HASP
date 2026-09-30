@@ -13,8 +13,8 @@ export const color = {
   primaryTint: "#D9F1FF",
   primarySubtle: "#EFFAFF",
   navy: "#001C52", // focus ring, strong headings on tint
-  secondary: "#B72280", // magenta: used sparingly (dataviz 2, the "across records" dimension)
-  secondarySubtle: "#FFF3FB",
+  secondary: "#870B58", // v3: SD Worx plum (was magenta #B72280); the "across all clients" dimension
+  secondarySubtle: "#FBF4F8",
 
   // Neutrals
   ink: "#0B1220", // v3: big headlines (near-black)

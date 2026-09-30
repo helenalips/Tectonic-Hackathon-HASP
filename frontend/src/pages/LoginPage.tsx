@@ -11,6 +11,15 @@ const PROMISES = [
   { icon: Users, text: "Every screen tells you which expert to ask." },
 ];
 
+// Local demo only (fictional accounts, documented in README). Rendered in dev builds only.
+const DEMO_PASSWORD = "TrustGrid-Demo-2026";
+const DEMO_ACCOUNTS = [
+  { email: "sofie@example.com", name: "Sofie Maes", role: "Consultant · Kaneka, CityD" },
+  { email: "tomasz@example.com", name: "Tomasz Nowak", role: "Consultant · SK hi-tech" },
+  { email: "lotte@example.com", name: "Lotte de Vries", role: "Team lead · all clients" },
+  { email: "admin@example.com", name: "Admin", role: "All clients" },
+];
+
 export function LoginPage() {
   const { me, login } = useAuth();
   const navigate = useNavigate();
@@ -28,10 +37,14 @@ export function LoginPage() {
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    await doLogin(email, password);
+  }
+
+  async function doLogin(emailValue: string, passwordValue: string) {
     setBusy(true);
     setError(null);
     try {
-      await login(email.trim(), password);
+      await login(emailValue.trim(), passwordValue.trim());
       navigate("/", { replace: true });
     } catch (err) {
       // One generic message: never reveal whether the email exists.
@@ -98,6 +111,25 @@ export function LoginPage() {
               {busy ? "Logging in…" : "Log in"}
             </button>
           </form>
+          {import.meta.env.DEV && (
+            <div className="mt-6 border-t border-border pt-5">
+              <p className="text-body-xs font-semibold uppercase tracking-wide text-textMuted">Demo accounts · one click</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {DEMO_ACCOUNTS.map((a) => (
+                  <button
+                    key={a.email}
+                    type="button"
+                    className="btn-secondary text-left"
+                    disabled={busy}
+                    onClick={() => void doLogin(a.email, DEMO_PASSWORD)}
+                  >
+                    <span className="block font-semibold">{a.name}</span>
+                    <span className="block text-body-xs text-textMuted">{a.role}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {USE_MOCKS && (
             <p className="mt-6 rounded-md bg-background px-3 py-2 text-center text-body-xs text-textMuted">
               Mock API: log in as sofie@example.com with any password.

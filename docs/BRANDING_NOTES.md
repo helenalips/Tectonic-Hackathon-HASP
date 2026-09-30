@@ -93,3 +93,35 @@ pills. Focus ring is 2px navy on every interactive element. Tested down to 768px
 | Solution checks | "Consistent within this record" / "Consistent across clients" with a check or cross and the reasons |
 | Human fallback | "Connect with an expert" (mailto link on every expert card and under uncertainties) |
 | Errors | Generic only: "Email or password is incorrect", "Something went wrong. Try again in a moment." |
+
+## v3: team one-pager and the "assistant in every channel" (2026-09-30)
+
+The team's one-pager now drives the look. Where it conflicts with the notes above, it wins.
+
+**Decisions**
+- **Grid language everywhere.** Horizontal = the client record, SD Worx blue `#006DD8`, arrow **↔**, label "Horizontal · checked against the record". Vertical = across all clients, SD Worx plum `#870B58` (replaces magenta `#B72280` for this dimension), arrow **↕**, label "Vertical · checked against all clients". The new item (your email, message or question) is red `#E4003A`. Every result view is split into these two lanes.
+- **TrustGrid mark.** Our own product mark, drawn inline as SVG (`TrustGridMark`): a 3×3 grid of rounded squares, top and bottom rows grey-plum-grey, middle row blue-red-blue, followed by the bold word "TrustGrid". It is not the SD Worx logo, which is no longer shown in the app header.
+- **Type.** Inter everywhere (self-hosted). Big headlines are Inter 800, near-black `#0B1220`, tracking -0.02em. Headings are navy `#001C52`, Inter 700.
+- **Signature rule.** A 3px rule from blue through plum to red sits under page titles.
+- **Lane cards** follow the one-pager side cards: a soft fill (`#E6F1FC`/`#F3F8FE` or `#F6E6EF`/`#FBF4F8`), a 4px left border in the dimension colour, and an uppercase, letter-spaced eyebrow with the arrow.
+- **GridMap.** Rows are clients. The current client's row sits in a light-blue band with blue dots (division labels above them), and the red "New item" sits where it crosses the plum column. Plum dots on other clients' rows mean "same problem, already solved". Conflicting documents are red; confirming ones have a green ring. Colour is never the only signal: each dot has a text label, and a legend sits under the grid.
+- **Main screen = Ask TrustGrid** (a chat). The Outlook and Slack mockups show the same assistant as a side panel. ⌘K opens the same assistant as an overlay on every page.
+
+**Tokens added to `frontend/src/theme/tokens.ts`**
+
+| Token | Value | Use |
+|---|---|---|
+| `color.ink` | `#0B1220` | Display headlines |
+| `status.dimension.*` | blue / plum / red with `soft` and `subtle` | Dimension accents |
+| `grid.horizontal` / `grid.vertical` | `#006DD8` + `#E6F1FC`/`#F3F8FE`; `#870B58` + `#F6E6EF`/`#FBF4F8` | Tailwind `hz-*` / `vt-*` |
+| `grid.newItem` | `#E4003A` | The new item and conflicting dots (never small text) |
+| `grid.rowLine` | `#C9CDD2` | Other clients' rows (decorative) |
+| `gradient.signature` | blue → plum → red | 3px rule (`bg-signature`) |
+| `radius.xl` / `radius.2xl` | 16px / 20px | Panels, lanes, chat cards (24px via Tailwind `rounded-3xl` for the chat window) |
+| `shadow.0` / `shadow.soft` / `shadow.pop` | hairline / panel / overlay | Cards, panels, palette and drawers |
+| `motion.*` | 150 / 200 / 250 ms, one easing curve | Fades and slides; switched off under `prefers-reduced-motion` |
+| `fontWeight.extrabold` | 800 | Headlines |
+| `fontSize.display-xl` / `display-l` | 52px / 40px | Landing and page headlines |
+| `layout.railWidth` / `topbarHeight` | 76px / 56px | App shell |
+
+**Contrast.** Plum `#870B58` on `#F6E6EF` and blue `#006DD8` on `#E6F1FC` both pass AA for text. Red `#E4003A` is used only for dots, the new-item circle and borders, never for small text. Conflict text uses `danger.text` `#CF0038` on `#FFF3F4`.

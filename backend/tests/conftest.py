@@ -5,6 +5,7 @@ os.environ.setdefault("JWT_SECRET", "test-secret-" + "x" * 40)
 os.environ.setdefault("DEMO_PASSWORD", "test-demo-password")
 os.environ.setdefault("LLM_MODE", "mock")
 os.environ.setdefault("EMBEDDINGS_BACKEND", "hash")
+os.environ["RATE_LOGIN"] = "5/minute"  # tests assert the production limit, whatever the local .env says
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

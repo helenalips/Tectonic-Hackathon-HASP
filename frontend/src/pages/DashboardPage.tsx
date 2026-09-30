@@ -14,6 +14,7 @@ import { useAuth } from "../lib/auth";
 import { DOC_TYPE_LABEL, formatDate, plural } from "../lib/format";
 import { factsConfirmedShare, recordTrust, reliableDocsShare } from "../lib/metrics";
 import { useAsync } from "../lib/useAsync";
+import { SignatureRule } from "../components/grid/TrustGridMark";
 
 interface DashboardData {
   clients: ClientSummary[];
@@ -130,8 +131,10 @@ export function DashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-heading-l font-bold">Hi {firstName},</h1>
-          <p className="mt-2 text-body text-textMuted">Here's what needs your attention across your clients.</p>
+          <p className="text-caption font-bold uppercase tracking-eyebrow text-hz">Clients · Hi {firstName}</p>
+          <h1 className="mt-1 font-display text-display-l font-extrabold tracking-tightest text-ink">What needs your attention.</h1>
+          <p className="mt-2 text-body-s text-textMuted">Open conflicts per record ↔ and what other clients already solved ↕.</p>
+          <SignatureRule className="mt-4 w-72" />
         </div>
         {mostUrgent && mostUrgent.consistency.open_conflicts > 0 && (
           <Link to={`/clients/${encodeURIComponent(mostUrgent.client.id)}#conflicts`} className="btn-primary">

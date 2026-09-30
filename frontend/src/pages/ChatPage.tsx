@@ -301,14 +301,15 @@ export function ChatPage() {
 
   // Question handed over from the top-bar ask box on another page.
   const handled = useRef(false);
+  const lastKey = useRef<string | null>(null);
   useEffect(() => {
     const q = (location.state as { q?: string } | null)?.q;
-    if (q && clientId && !handled.current) {
-      handled.current = true;
+    if (q && clientId && lastKey.current !== location.key) {
+      lastKey.current = location.key;
       navigate(".", { replace: true, state: null });
       void send(q);
     }
-  }, [location.state, clientId, send, navigate]);
+  }, [location.state, location.key, clientId, send, navigate]);
 
   // Presenter shortcut: /?demo=<draft id> sends that quick-start draft.
   useEffect(() => {
